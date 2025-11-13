@@ -1,0 +1,5 @@
+/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/build/CMakeFiles/Malachite.dir
+/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/build/CMakeFiles/edit_cache.dir
+/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/build/CMakeFiles/rebuild_cache.dir
+/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/build/CMakeFiles/Malachite_autogen_timestamp_deps.dir
+/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/build/CMakeFiles/Malachite_autogen.dir
