@@ -968,6 +968,7 @@ CMakeFiles/Malachite.dir/main.cpp.o: \
   /opt/homebrew/include/QtCore/qhash.h \
   /opt/homebrew/include/QtCore/qvarlengtharray.h \
   /opt/homebrew/include/QtGui/qguiapplication_platform.h \
+  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/app/app.h \
   /opt/homebrew/lib/QtWidgets.framework/Headers/QWidget \
   /opt/homebrew/lib/QtWidgets.framework/Headers/qwidget.h \
   /opt/homebrew/include/QtGui/qaction.h \
@@ -981,39 +982,34 @@ CMakeFiles/Malachite.dir/main.cpp.o: \
   /opt/homebrew/include/QtGui/qfontinfo.h \
   /opt/homebrew/include/QtGui/qfontvariableaxis.h \
   /opt/homebrew/include/QtWidgets/qsizepolicy.h \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/QLabel \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/qlabel.h \
-  /opt/homebrew/include/QtWidgets/qframe.h \
+  /opt/homebrew/lib/QtWidgets.framework/Headers/QMenuBar \
+  /opt/homebrew/lib/QtWidgets.framework/Headers/qmenubar.h \
+  /opt/homebrew/include/QtWidgets/qmenu.h \
   /opt/homebrew/include/QtWidgets/qwidget.h \
-  /opt/homebrew/include/QtGui/qpicture.h \
-  /opt/homebrew/include/QtCore/qiodevice.h \
-  /opt/homebrew/include/QtGui/qtextdocument.h \
-  /opt/homebrew/include/QtCore/qurl.h \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/QPushButton \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/qpushbutton.h \
-  /opt/homebrew/include/QtWidgets/qabstractbutton.h \
+  /opt/homebrew/lib/QtWidgets.framework/Headers/QMenu \
+  /opt/homebrew/lib/QtWidgets.framework/Headers/qmenu.h \
+  /opt/homebrew/lib/QtGui.framework/Headers/QAction \
+  /opt/homebrew/lib/QtGui.framework/Headers/qaction.h \
   /opt/homebrew/lib/QtWidgets.framework/Headers/QVBoxLayout \
   /opt/homebrew/lib/QtWidgets.framework/Headers/qboxlayout.h \
   /opt/homebrew/include/QtWidgets/qlayout.h \
   /opt/homebrew/include/QtWidgets/qlayoutitem.h \
   /opt/homebrew/include/QtWidgets/qboxlayout.h \
   /opt/homebrew/include/QtWidgets/qgridlayout.h \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/QMessageBox \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/qmessagebox.h \
-  /opt/homebrew/include/QtWidgets/qdialog.h \
-  /opt/homebrew/include/QtWidgets/qdialogbuttonbox.h \
+  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/app/../text/CustomTextEdit.h \
   /opt/homebrew/lib/QtWidgets.framework/Headers/QTextEdit \
   /opt/homebrew/lib/QtWidgets.framework/Headers/qtextedit.h \
   /opt/homebrew/include/QtWidgets/qabstractscrollarea.h \
+  /opt/homebrew/include/QtWidgets/qframe.h \
+  /opt/homebrew/include/QtGui/qtextdocument.h \
+  /opt/homebrew/include/QtCore/qurl.h \
   /opt/homebrew/include/QtGui/qtextoption.h \
   /opt/homebrew/include/QtGui/qtextcursor.h \
   /opt/homebrew/include/QtGui/qtextformat.h \
   /opt/homebrew/include/QtGui/qpen.h \
-  /opt/homebrew/lib/QtGui.framework/Headers/QSyntaxHighlighter \
-  /opt/homebrew/lib/QtGui.framework/Headers/qsyntaxhighlighter.h \
-  /opt/homebrew/include/QtGui/qtextobject.h \
-  /opt/homebrew/include/QtGui/qtextlayout.h \
-  /opt/homebrew/include/QtGui/qevent.h \
+  /opt/homebrew/lib/QtGui.framework/Headers/QKeyEvent \
+  /opt/homebrew/lib/QtGui.framework/Headers/qevent.h \
+  /opt/homebrew/include/QtCore/qiodevice.h \
   /opt/homebrew/include/QtGui/qeventpoint.h \
   /opt/homebrew/include/QtGui/qvector2d.h \
   /opt/homebrew/include/QtGui/qvectornd.h \
@@ -1026,33 +1022,20 @@ CMakeFiles/Malachite.dir/main.cpp.o: \
   /opt/homebrew/include/QtCore/QSizeF \
   /opt/homebrew/include/QtGui/QTransform \
   /opt/homebrew/include/QtGui/qscreen_platform.h \
+  /opt/homebrew/lib/QtGui.framework/Headers/QTextCursor \
+  /opt/homebrew/lib/QtGui.framework/Headers/qtextcursor.h \
+  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/parser/parser.h \
+  /opt/homebrew/lib/QtGui.framework/Headers/QSyntaxHighlighter \
+  /opt/homebrew/lib/QtGui.framework/Headers/qsyntaxhighlighter.h \
+  /opt/homebrew/include/QtGui/qtextobject.h \
+  /opt/homebrew/include/QtGui/qtextlayout.h \
+  /opt/homebrew/include/QtGui/qevent.h \
   /opt/homebrew/include/QtGui/qglyphrun.h \
   /opt/homebrew/include/QtGui/qrawfont.h \
   /opt/homebrew/include/QtGui/qfontdatabase.h \
+  /opt/homebrew/lib/QtGui.framework/Headers/QTextCharFormat \
+  /opt/homebrew/lib/QtGui.framework/Headers/qtextformat.h \
   /opt/homebrew/lib/QtCore.framework/Headers/QRegularExpression \
   /opt/homebrew/lib/QtCore.framework/Headers/qregularexpression.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/istream \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__ostream/basic_ostream.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/bitset \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_char_like_type.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/format \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/queue \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/deque.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/queue.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/deque \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/stack \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/stack.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/print \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/unistd.h \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/text/CustomTextEdit.h \
-  /opt/homebrew/lib/QtGui.framework/Headers/QKeyEvent \
-  /opt/homebrew/lib/QtGui.framework/Headers/qevent.h \
-  /opt/homebrew/lib/QtGui.framework/Headers/QTextCursor \
-  /opt/homebrew/lib/QtGui.framework/Headers/qtextcursor.h \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/include/main.moc \
-  /opt/homebrew/include/QtCore/qtmochelpers.h \
-  /opt/homebrew/include/QtCore/qtmocconstants.h \
-  /opt/homebrew/include/QtCore/q20algorithm.h \
-  /opt/homebrew/include/QtCore/q23type_traits.h
+  /opt/homebrew/lib/QtCore.framework/Headers/QVector \
+  /opt/homebrew/lib/QtCore.framework/Headers/qvector.h

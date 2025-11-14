@@ -1,7 +1,6 @@
-CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o: \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/mocs_compilation.cpp \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/NEQJEQN6NR/moc_app.cpp \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/NEQJEQN6NR/../../../scr/app/app.h \
+CMakeFiles/Malachite.dir/scr/app/app.cpp.o: \
+  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/app/app.cpp \
+  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/app/app.h \
   /opt/homebrew/lib/QtWidgets.framework/Headers/QWidget \
   /opt/homebrew/lib/QtWidgets.framework/Headers/qwidget.h \
   /opt/homebrew/include/QtWidgets/qtwidgetsglobal.h \
@@ -982,7 +981,7 @@ CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o: \
   /opt/homebrew/include/QtWidgets/qlayoutitem.h \
   /opt/homebrew/include/QtWidgets/qboxlayout.h \
   /opt/homebrew/include/QtWidgets/qgridlayout.h \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/NEQJEQN6NR/../../../scr/app/../text/CustomTextEdit.h \
+  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/app/../text/CustomTextEdit.h \
   /opt/homebrew/lib/QtWidgets.framework/Headers/QTextEdit \
   /opt/homebrew/lib/QtWidgets.framework/Headers/qtextedit.h \
   /opt/homebrew/include/QtWidgets/qabstractscrollarea.h \
@@ -1023,12 +1022,59 @@ CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o: \
   /opt/homebrew/include/QtGui/qguiapplication_platform.h \
   /opt/homebrew/lib/QtGui.framework/Headers/QTextCursor \
   /opt/homebrew/lib/QtGui.framework/Headers/qtextcursor.h \
-  /opt/homebrew/include/QtCore/qtmochelpers.h \
-  /opt/homebrew/include/QtCore/qtmocconstants.h \
-  /opt/homebrew/include/QtCore/q20algorithm.h \
-  /opt/homebrew/include/QtCore/q23type_traits.h \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/6XZRMUB7RW/moc_parser.cpp \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/6XZRMUB7RW/../../../scr/parser/parser.h \
+  /opt/homebrew/lib/QtWidgets.framework/Headers/QMessageBox \
+  /opt/homebrew/lib/QtWidgets.framework/Headers/qmessagebox.h \
+  /opt/homebrew/include/QtWidgets/qdialog.h \
+  /opt/homebrew/include/QtWidgets/qdialogbuttonbox.h \
+  /opt/homebrew/lib/QtWidgets.framework/Headers/QFileDialog \
+  /opt/homebrew/lib/QtWidgets.framework/Headers/qfiledialog.h \
+  /opt/homebrew/include/QtCore/qdir.h \
+  /opt/homebrew/include/QtCore/qdirlisting.h \
+  /opt/homebrew/include/QtCore/qfiledevice.h \
+  /opt/homebrew/include/QtCore/qdatetime.h \
+  /opt/homebrew/include/QtCore/qcalendar.h \
+  /opt/homebrew/include/QtCore/qfile.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/filesystem \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/copy_options.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/directory_entry.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/file_status.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/file_type.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/perms.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/file_time_type.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/filesystem_error.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/path.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iomanip \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/istream \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__ostream/basic_ostream.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/bitset \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_char_like_type.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ostream \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/format \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/queue \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/deque.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/queue.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/deque \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/stack \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/stack.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/print \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/unistd.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/operations.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/perm_options.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/space_info.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/directory_iterator.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/directory_options.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/path_iterator.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/recursive_directory_iterator.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/u8path.h \
+  /opt/homebrew/include/QtCore/qfileinfo.h \
+  /opt/homebrew/include/QtCore/qtimezone.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/QFile \
+  /opt/homebrew/lib/QtCore.framework/Headers/qfile.h \
+  /opt/homebrew/lib/QtCore.framework/Headers/QTextStream \
+  /opt/homebrew/lib/QtCore.framework/Headers/qtextstream.h \
+  /opt/homebrew/lib/QtWidgets.framework/Headers/QApplication \
+  /opt/homebrew/lib/QtWidgets.framework/Headers/qapplication.h \
+  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/app/../parser/parser.h \
   /opt/homebrew/lib/QtGui.framework/Headers/QSyntaxHighlighter \
   /opt/homebrew/lib/QtGui.framework/Headers/qsyntaxhighlighter.h \
   /opt/homebrew/include/QtGui/qtextobject.h \

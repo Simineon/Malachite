@@ -106,22 +106,54 @@ CMakeFiles/Malachite.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Malachite.dir/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/main.cpp" -o CMakeFiles/Malachite.dir/main.cpp.s
 
+CMakeFiles/Malachite.dir/scr/app/app.cpp.o: CMakeFiles/Malachite.dir/flags.make
+CMakeFiles/Malachite.dir/scr/app/app.cpp.o: /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/app/app.cpp
+CMakeFiles/Malachite.dir/scr/app/app.cpp.o: CMakeFiles/Malachite.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/Malachite.dir/scr/app/app.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Malachite.dir/scr/app/app.cpp.o -MF CMakeFiles/Malachite.dir/scr/app/app.cpp.o.d -o CMakeFiles/Malachite.dir/scr/app/app.cpp.o -c "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/scr/app/app.cpp"
+
+CMakeFiles/Malachite.dir/scr/app/app.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Malachite.dir/scr/app/app.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/scr/app/app.cpp" > CMakeFiles/Malachite.dir/scr/app/app.cpp.i
+
+CMakeFiles/Malachite.dir/scr/app/app.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Malachite.dir/scr/app/app.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/scr/app/app.cpp" -o CMakeFiles/Malachite.dir/scr/app/app.cpp.s
+
+CMakeFiles/Malachite.dir/scr/parser/parser.cpp.o: CMakeFiles/Malachite.dir/flags.make
+CMakeFiles/Malachite.dir/scr/parser/parser.cpp.o: /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/parser/parser.cpp
+CMakeFiles/Malachite.dir/scr/parser/parser.cpp.o: CMakeFiles/Malachite.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/Malachite.dir/scr/parser/parser.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Malachite.dir/scr/parser/parser.cpp.o -MF CMakeFiles/Malachite.dir/scr/parser/parser.cpp.o.d -o CMakeFiles/Malachite.dir/scr/parser/parser.cpp.o -c "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/scr/parser/parser.cpp"
+
+CMakeFiles/Malachite.dir/scr/parser/parser.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Malachite.dir/scr/parser/parser.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/scr/parser/parser.cpp" > CMakeFiles/Malachite.dir/scr/parser/parser.cpp.i
+
+CMakeFiles/Malachite.dir/scr/parser/parser.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Malachite.dir/scr/parser/parser.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/scr/parser/parser.cpp" -o CMakeFiles/Malachite.dir/scr/parser/parser.cpp.s
+
 # Object files for target Malachite
 Malachite_OBJECTS = \
 "CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o" \
-"CMakeFiles/Malachite.dir/main.cpp.o"
+"CMakeFiles/Malachite.dir/main.cpp.o" \
+"CMakeFiles/Malachite.dir/scr/app/app.cpp.o" \
+"CMakeFiles/Malachite.dir/scr/parser/parser.cpp.o"
 
 # External object files for target Malachite
 Malachite_EXTERNAL_OBJECTS =
 
 Malachite: CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o
 Malachite: CMakeFiles/Malachite.dir/main.cpp.o
+Malachite: CMakeFiles/Malachite.dir/scr/app/app.cpp.o
+Malachite: CMakeFiles/Malachite.dir/scr/parser/parser.cpp.o
 Malachite: CMakeFiles/Malachite.dir/build.make
 Malachite: /opt/homebrew/lib/QtWidgets.framework/Versions/A/QtWidgets
 Malachite: /opt/homebrew/lib/QtGui.framework/Versions/A/QtGui
 Malachite: /opt/homebrew/lib/QtCore.framework/Versions/A/QtCore
 Malachite: CMakeFiles/Malachite.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable Malachite"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable Malachite"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Malachite.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

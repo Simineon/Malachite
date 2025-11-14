@@ -413,7 +413,21 @@
 	"CROSS_CONFIG" : false,
 	"DEP_FILE" : "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/build/Malachite_autogen/deps",
 	"DEP_FILE_RULE_NAME" : "Malachite_autogen/timestamp",
-	"HEADERS" : [],
+	"HEADERS" : 
+	[
+		[
+			"/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/scr/app/app.h",
+			"Mu",
+			"NEQJEQN6NR/moc_app.cpp",
+			null
+		],
+		[
+			"/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/scr/parser/parser.h",
+			"Mu",
+			"6XZRMUB7RW/moc_parser.cpp",
+			null
+		]
+	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
 	"INCLUDE_DIR" : "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/build/Malachite_autogen/include",
 	"MOC_COMPILATION_FILE" : "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/build/Malachite_autogen/mocs_compilation.cpp",
@@ -427,6 +441,7 @@
 	],
 	"MOC_INCLUDES" : 
 	[
+		"/Users/semiontyulenev/Desktop/My Folder/C++/Malachite",
 		"/opt/homebrew/lib/QtWidgets.framework/Headers",
 		"/opt/homebrew/lib/QtWidgets.framework",
 		"/opt/homebrew/lib/QtCore.framework/Headers",
@@ -475,6 +490,16 @@
 	[
 		[
 			"/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/main.cpp",
+			"Mu",
+			null
+		],
+		[
+			"/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/scr/app/app.cpp",
+			"Mu",
+			null
+		],
+		[
+			"/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/scr/parser/parser.cpp",
 			"Mu",
 			null
 		]

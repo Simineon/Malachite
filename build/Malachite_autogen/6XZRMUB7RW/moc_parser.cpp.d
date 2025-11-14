@@ -1,4 +1,4 @@
-/Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/include/main.moc: /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/main.cpp \
+/Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/6XZRMUB7RW/moc_parser.cpp: /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/parser/parser.h \
   /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/moc_predefs.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/Availability.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/AvailabilityInternal.h \
@@ -261,7 +261,6 @@
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/bit_reference.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/byte.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/complex.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/deque.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/format.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/fstream.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/functional.h \
@@ -271,9 +270,7 @@
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/memory_resource.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/ostream.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/pair.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/queue.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/sstream.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/stack.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/streambuf.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/string.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__fwd/string_view.h \
@@ -390,7 +387,6 @@
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__numeric/transform_exclusive_scan.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__numeric/transform_inclusive_scan.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__numeric/transform_reduce.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__ostream/basic_ostream.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__random/is_valid.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__random/log2.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__random/uniform_int_distribution.h \
@@ -469,7 +465,6 @@
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/is_base_of.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/is_bounded_array.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/is_callable.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/is_char_like_type.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/is_class.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/is_compound.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/__type_traits/is_const.h \
@@ -577,7 +572,6 @@
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/array \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/atomic \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/bit \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/bitset \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/cassert \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/cctype \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/cerrno \
@@ -597,18 +591,14 @@
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/ctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/cwchar \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/cwctype \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/deque \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/errno.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/exception \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/execution \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/format \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/forward_list \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/functional \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/initializer_list \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/ios \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/iosfwd \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/iostream \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/istream \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/iterator \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/limits \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/list \
@@ -621,12 +611,8 @@
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/new \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/numeric \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/optional \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/ostream \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/print \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/queue \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/ratio \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/set \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/stack \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/stdbool.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/stddef.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk/usr/include/c++/v1/stdexcept \
@@ -741,15 +727,13 @@
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/__stdarg_va_list.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/limits.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdarg.h \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/app/app.h \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/app/parser.h \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/text/CustomTextEdit.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/QList \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/QObject \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/QRect \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/QRegularExpression \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/QSize \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/QSizeF \
+  /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/QVector \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/q17memory.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/q20functional.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/q20iterator.h \
@@ -885,37 +869,28 @@
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/qutf8stringview.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/qvariant.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/qvarlengtharray.h \
+  /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/qvector.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/qversiontagging.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/qxptype_traits.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtCore.framework/Versions/A/Headers/qyieldcpu.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/QKeyEvent \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/QSyntaxHighlighter \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/QTextCursor \
+  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/QTextCharFormat \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/QTransform \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qaction.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qbitmap.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qbrush.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qcolor.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qcursor.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qevent.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qeventpoint.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qfont.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qfontdatabase.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qfontinfo.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qfontmetrics.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qfontvariableaxis.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qglyphrun.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qguiapplication.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qguiapplication_platform.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qicon.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qimage.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qinputdevice.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qinputmethod.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qkeysequence.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qpaintdevice.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qpalette.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qpen.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qpicture.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qpixelformat.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qpixmap.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qpointingdevice.h \
@@ -939,34 +914,4 @@
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qtransform.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qvector2d.h \
   /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qvectornd.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qwindowdefs.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/QApplication \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/QLabel \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/QMenu \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/QMenuBar \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/QMessageBox \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/QPushButton \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/QTextEdit \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/QVBoxLayout \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/QWidget \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qabstractbutton.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qabstractscrollarea.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qapplication.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qboxlayout.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qdialog.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qdialogbuttonbox.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qframe.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qgridlayout.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qlabel.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qlayout.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qlayoutitem.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qmenu.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qmenubar.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qmessagebox.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qpushbutton.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qsizepolicy.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qtextedit.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qtwidgets-config.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qtwidgetsexports.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qtwidgetsglobal.h \
-  /opt/homebrew/Cellar/qt/6.9.1/lib/QtWidgets.framework/Versions/A/Headers/qwidget.h
+  /opt/homebrew/Cellar/qt/6.9.1/lib/QtGui.framework/Versions/A/Headers/qwindowdefs.h

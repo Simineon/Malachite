@@ -1,10 +1,8 @@
-CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o: \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/mocs_compilation.cpp \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/NEQJEQN6NR/moc_app.cpp \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/NEQJEQN6NR/../../../scr/app/app.h \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/QWidget \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/qwidget.h \
-  /opt/homebrew/include/QtWidgets/qtwidgetsglobal.h \
+CMakeFiles/Malachite.dir/scr/parser/parser.cpp.o: \
+  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/parser/parser.cpp \
+  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/scr/parser/parser.h \
+  /opt/homebrew/lib/QtGui.framework/Headers/QSyntaxHighlighter \
+  /opt/homebrew/lib/QtGui.framework/Headers/qsyntaxhighlighter.h \
   /opt/homebrew/include/QtGui/qtguiglobal.h \
   /opt/homebrew/include/QtCore/qglobal.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/type_traits \
@@ -686,9 +684,7 @@ CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o: \
   /opt/homebrew/include/QtCore/qversiontagging.h \
   /opt/homebrew/include/QtGui/qtgui-config.h \
   /opt/homebrew/include/QtGui/qtguiexports.h \
-  /opt/homebrew/include/QtWidgets/qtwidgets-config.h \
-  /opt/homebrew/include/QtWidgets/qtwidgetsexports.h \
-  /opt/homebrew/include/QtGui/qwindowdefs.h \
+  /opt/homebrew/include/QtCore/qobject.h \
   /opt/homebrew/include/QtCore/qobjectdefs.h \
   /opt/homebrew/include/QtCore/qnamespace.h \
   /opt/homebrew/include/QtCore/qcompare.h \
@@ -851,7 +847,6 @@ CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o: \
   /opt/homebrew/include/QtCore/qtmetamacros.h \
   /opt/homebrew/include/QtCore/qobjectdefs_impl.h \
   /opt/homebrew/include/QtCore/qfunctionaltools_impl.h \
-  /opt/homebrew/include/QtCore/qobject.h \
   /opt/homebrew/include/QtCore/qstring.h \
   /opt/homebrew/include/QtCore/qchar.h \
   /opt/homebrew/include/QtCore/qstringview.h \
@@ -921,22 +916,21 @@ CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/chrono \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__chrono/file_clock.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/forward_list \
-  /opt/homebrew/include/QtCore/qmargins.h \
+  /opt/homebrew/include/QtGui/qtextobject.h \
+  /opt/homebrew/include/QtGui/qtextformat.h \
+  /opt/homebrew/include/QtGui/qbrush.h \
+  /opt/homebrew/include/QtCore/qpoint.h \
   /opt/homebrew/include/QtCore/q23utility.h \
   /opt/homebrew/include/QtCore/q20utility.h \
-  /opt/homebrew/include/QtGui/qaction.h \
-  /opt/homebrew/include/QtGui/qkeysequence.h \
-  /opt/homebrew/include/QtGui/qicon.h \
-  /opt/homebrew/include/QtCore/qsize.h \
-  /opt/homebrew/include/QtGui/qpixmap.h \
-  /opt/homebrew/include/QtGui/qpaintdevice.h \
-  /opt/homebrew/include/QtCore/qrect.h \
-  /opt/homebrew/include/QtCore/qpoint.h \
   /opt/homebrew/include/QtGui/qcolor.h \
   /opt/homebrew/include/QtGui/qrgb.h \
   /opt/homebrew/include/QtGui/qrgba64.h \
-  /opt/homebrew/include/QtCore/qshareddata.h \
   /opt/homebrew/include/QtGui/qimage.h \
+  /opt/homebrew/include/QtGui/qpaintdevice.h \
+  /opt/homebrew/include/QtGui/qwindowdefs.h \
+  /opt/homebrew/include/QtCore/qrect.h \
+  /opt/homebrew/include/QtCore/qmargins.h \
+  /opt/homebrew/include/QtCore/qsize.h \
   /opt/homebrew/include/QtGui/qpixelformat.h \
   /opt/homebrew/include/QtGui/qtransform.h \
   /opt/homebrew/include/QtGui/qpolygon.h \
@@ -945,6 +939,12 @@ CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cassert \
   /opt/homebrew/include/QtCore/q20iterator.h \
   /opt/homebrew/include/QtCore/qline.h \
+  /opt/homebrew/include/QtGui/qpixmap.h \
+  /opt/homebrew/include/QtCore/qshareddata.h \
+  /opt/homebrew/include/QtGui/qfont.h \
+  /opt/homebrew/include/QtCore/qendian.h \
+  /opt/homebrew/include/QtGui/qpen.h \
+  /opt/homebrew/include/QtGui/qtextoption.h \
   /opt/homebrew/include/QtCore/qvariant.h \
   /opt/homebrew/include/QtCore/qdebug.h \
   /opt/homebrew/include/QtCore/qtextstream.h \
@@ -958,43 +958,8 @@ CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o: \
   /opt/homebrew/include/QtCore/qset.h \
   /opt/homebrew/include/QtCore/qhash.h \
   /opt/homebrew/include/QtCore/qvarlengtharray.h \
-  /opt/homebrew/include/QtGui/qpalette.h \
-  /opt/homebrew/include/QtGui/qbrush.h \
-  /opt/homebrew/include/QtGui/qfont.h \
-  /opt/homebrew/include/QtCore/qendian.h \
-  /opt/homebrew/include/QtGui/qfontmetrics.h \
-  /opt/homebrew/include/QtGui/qfontinfo.h \
-  /opt/homebrew/include/QtGui/qfontvariableaxis.h \
-  /opt/homebrew/include/QtWidgets/qsizepolicy.h \
-  /opt/homebrew/include/QtGui/qcursor.h \
-  /opt/homebrew/include/QtGui/qbitmap.h \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/QMenuBar \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/qmenubar.h \
-  /opt/homebrew/include/QtWidgets/qmenu.h \
-  /opt/homebrew/include/QtWidgets/qwidget.h \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/QMenu \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/qmenu.h \
-  /opt/homebrew/lib/QtGui.framework/Headers/QAction \
-  /opt/homebrew/lib/QtGui.framework/Headers/qaction.h \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/QVBoxLayout \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/qboxlayout.h \
-  /opt/homebrew/include/QtWidgets/qlayout.h \
-  /opt/homebrew/include/QtWidgets/qlayoutitem.h \
-  /opt/homebrew/include/QtWidgets/qboxlayout.h \
-  /opt/homebrew/include/QtWidgets/qgridlayout.h \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/NEQJEQN6NR/../../../scr/app/../text/CustomTextEdit.h \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/QTextEdit \
-  /opt/homebrew/lib/QtWidgets.framework/Headers/qtextedit.h \
-  /opt/homebrew/include/QtWidgets/qabstractscrollarea.h \
-  /opt/homebrew/include/QtWidgets/qframe.h \
-  /opt/homebrew/include/QtGui/qtextdocument.h \
-  /opt/homebrew/include/QtCore/qurl.h \
-  /opt/homebrew/include/QtGui/qtextoption.h \
-  /opt/homebrew/include/QtGui/qtextcursor.h \
-  /opt/homebrew/include/QtGui/qtextformat.h \
-  /opt/homebrew/include/QtGui/qpen.h \
-  /opt/homebrew/lib/QtGui.framework/Headers/QKeyEvent \
-  /opt/homebrew/lib/QtGui.framework/Headers/qevent.h \
+  /opt/homebrew/include/QtGui/qtextlayout.h \
+  /opt/homebrew/include/QtGui/qevent.h \
   /opt/homebrew/include/QtCore/qcoreevent.h \
   /opt/homebrew/include/QtCore/qbasictimer.h \
   /opt/homebrew/include/QtCore/qabstracteventdispatcher.h \
@@ -1002,6 +967,7 @@ CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o: \
   /opt/homebrew/include/QtCore/qdeadlinetimer.h \
   /opt/homebrew/include/QtCore/qelapsedtimer.h \
   /opt/homebrew/include/QtCore/qiodevice.h \
+  /opt/homebrew/include/QtCore/qurl.h \
   /opt/homebrew/include/QtGui/qeventpoint.h \
   /opt/homebrew/include/QtGui/qvector2d.h \
   /opt/homebrew/include/QtGui/qvectornd.h \
@@ -1021,22 +987,12 @@ CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o: \
   /opt/homebrew/include/QtGui/qinputmethod.h \
   /opt/homebrew/include/QtCore/qlocale.h \
   /opt/homebrew/include/QtGui/qguiapplication_platform.h \
-  /opt/homebrew/lib/QtGui.framework/Headers/QTextCursor \
-  /opt/homebrew/lib/QtGui.framework/Headers/qtextcursor.h \
-  /opt/homebrew/include/QtCore/qtmochelpers.h \
-  /opt/homebrew/include/QtCore/qtmocconstants.h \
-  /opt/homebrew/include/QtCore/q20algorithm.h \
-  /opt/homebrew/include/QtCore/q23type_traits.h \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/6XZRMUB7RW/moc_parser.cpp \
-  /Users/semiontyulenev/Desktop/My\ Folder/C++/Malachite/build/Malachite_autogen/6XZRMUB7RW/../../../scr/parser/parser.h \
-  /opt/homebrew/lib/QtGui.framework/Headers/QSyntaxHighlighter \
-  /opt/homebrew/lib/QtGui.framework/Headers/qsyntaxhighlighter.h \
-  /opt/homebrew/include/QtGui/qtextobject.h \
-  /opt/homebrew/include/QtGui/qtextlayout.h \
-  /opt/homebrew/include/QtGui/qevent.h \
+  /opt/homebrew/include/QtGui/qkeysequence.h \
   /opt/homebrew/include/QtGui/qglyphrun.h \
   /opt/homebrew/include/QtGui/qrawfont.h \
   /opt/homebrew/include/QtGui/qfontdatabase.h \
+  /opt/homebrew/include/QtGui/qtextcursor.h \
+  /opt/homebrew/include/QtGui/qtextdocument.h \
   /opt/homebrew/lib/QtGui.framework/Headers/QTextCharFormat \
   /opt/homebrew/lib/QtGui.framework/Headers/qtextformat.h \
   /opt/homebrew/lib/QtCore.framework/Headers/QRegularExpression \

@@ -203,6 +203,54 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Malachite.dir/build.make CMakeFiles/Malachite.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+scr/app/app.o: scr/app/app.cpp.o
+.PHONY : scr/app/app.o
+
+# target to build an object file
+scr/app/app.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Malachite.dir/build.make CMakeFiles/Malachite.dir/scr/app/app.cpp.o
+.PHONY : scr/app/app.cpp.o
+
+scr/app/app.i: scr/app/app.cpp.i
+.PHONY : scr/app/app.i
+
+# target to preprocess a source file
+scr/app/app.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Malachite.dir/build.make CMakeFiles/Malachite.dir/scr/app/app.cpp.i
+.PHONY : scr/app/app.cpp.i
+
+scr/app/app.s: scr/app/app.cpp.s
+.PHONY : scr/app/app.s
+
+# target to generate assembly for a file
+scr/app/app.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Malachite.dir/build.make CMakeFiles/Malachite.dir/scr/app/app.cpp.s
+.PHONY : scr/app/app.cpp.s
+
+scr/parser/parser.o: scr/parser/parser.cpp.o
+.PHONY : scr/parser/parser.o
+
+# target to build an object file
+scr/parser/parser.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Malachite.dir/build.make CMakeFiles/Malachite.dir/scr/parser/parser.cpp.o
+.PHONY : scr/parser/parser.cpp.o
+
+scr/parser/parser.i: scr/parser/parser.cpp.i
+.PHONY : scr/parser/parser.i
+
+# target to preprocess a source file
+scr/parser/parser.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Malachite.dir/build.make CMakeFiles/Malachite.dir/scr/parser/parser.cpp.i
+.PHONY : scr/parser/parser.cpp.i
+
+scr/parser/parser.s: scr/parser/parser.cpp.s
+.PHONY : scr/parser/parser.s
+
+# target to generate assembly for a file
+scr/parser/parser.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Malachite.dir/build.make CMakeFiles/Malachite.dir/scr/parser/parser.cpp.s
+.PHONY : scr/parser/parser.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -220,6 +268,12 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... scr/app/app.o"
+	@echo "... scr/app/app.i"
+	@echo "... scr/app/app.s"
+	@echo "... scr/parser/parser.o"
+	@echo "... scr/parser/parser.i"
+	@echo "... scr/parser/parser.s"
 .PHONY : help
 
 

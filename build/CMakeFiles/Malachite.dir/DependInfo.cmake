@@ -11,6 +11,8 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "" "Malachite_autogen/timestamp" "custom" "Malachite_autogen/deps"
   "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/build/Malachite_autogen/mocs_compilation.cpp" "CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o" "gcc" "CMakeFiles/Malachite.dir/Malachite_autogen/mocs_compilation.cpp.o.d"
   "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/main.cpp" "CMakeFiles/Malachite.dir/main.cpp.o" "gcc" "CMakeFiles/Malachite.dir/main.cpp.o.d"
+  "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/scr/app/app.cpp" "CMakeFiles/Malachite.dir/scr/app/app.cpp.o" "gcc" "CMakeFiles/Malachite.dir/scr/app/app.cpp.o.d"
+  "/Users/semiontyulenev/Desktop/My Folder/C++/Malachite/scr/parser/parser.cpp" "CMakeFiles/Malachite.dir/scr/parser/parser.cpp.o" "gcc" "CMakeFiles/Malachite.dir/scr/parser/parser.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
