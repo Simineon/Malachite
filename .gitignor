@@ -1,6 +1,0 @@
-# builded files 
-build/
-
-# system files
-.DS_Store
--gitignore
