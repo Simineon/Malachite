@@ -2,13 +2,13 @@
 #define APP_H
 
 #include <QWidget>
-#include <QMenuBar>
-#include <QMenu>
-#include <QAction>
-#include <QVBoxLayout>
 #include "../text/CustomTextEdit.h"
 
-class App : public QWidget {
+class QFileSystemModel;
+class QTreeView;
+
+class App : public QWidget
+{
     Q_OBJECT
 
 public:
@@ -18,12 +18,15 @@ private slots:
     void newFile();
     void openFile();
     void saveFile();
-    void exitApp();
+    void openFileFromExplorer(const QString &filePath);
     void executePy();
+    void exitApp();
 
 private:
+    void refreshFileModel(QFileSystemModel *fileModel, QTreeView *fileTree);
+    
     CustomTextEdit *editor;
     QString currentFilePath;
 };
 
-#endif 
+#endif // APP_H

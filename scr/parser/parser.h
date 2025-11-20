@@ -5,6 +5,7 @@
 #include <QTextCharFormat>
 #include <QRegularExpression>
 #include <QVector>
+#include <QColor>
 
 class Parser : public QSyntaxHighlighter {
     Q_OBJECT
@@ -29,6 +30,7 @@ private:
     QTextCharFormat singleStringFormat;
     QTextCharFormat commentFormat;
     QTextCharFormat numberFormat;
+    QTextCharFormat parensFormat;
 };
 
 #endif 

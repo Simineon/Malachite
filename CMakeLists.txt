@@ -12,6 +12,7 @@ add_executable(Malachite
     main.cpp
     scr/app/app.cpp
     scr/parser/parser.cpp
+    scr/text/CustomTextEdit.h
 )
 
 target_link_libraries(Malachite Qt6::Widgets)
