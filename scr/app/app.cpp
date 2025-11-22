@@ -27,6 +27,9 @@
 #include <QTimer>
 #include <QDir>
 #include <QFileInfo>
+#include <QTabWidget>
+#include <QToolBar>
+#include <QToolButton>
 #include "../parser/parser.h"
 #include "../app/execute/executer.h"
 
@@ -88,12 +91,11 @@ App::App(QWidget *parent) : QWidget(parent) {
         "}"
     );
     
-    // Панель инструментов проводника - ОБНОВЛЕНА
+    // Панель инструментов проводника
     QWidget *toolbar = new QWidget(this);
     QHBoxLayout *toolbarLayout = new QHBoxLayout(toolbar);
     toolbarLayout->setContentsMargins(5, 2, 5, 2);
     
-    // НОВАЯ КНОПКА: Открыть папку
     QPushButton *openFolderBtn = new QPushButton("Open Folder");
     QPushButton *newFileBtn = new QPushButton("New File");
     QPushButton *newFolderBtn = new QPushButton("New Folder");
@@ -127,14 +129,51 @@ App::App(QWidget *parent) : QWidget(parent) {
     leftLayout->addWidget(toolbar);
     leftLayout->addWidget(fileTree);
     
-    editor = new CustomTextEdit(this);
+    // Создаем виджет с вкладками вместо одного редактора
+    tabWidget = new QTabWidget(this);
+    tabWidget->setTabsClosable(true);
+    tabWidget->setMovable(true);
+    tabWidget->setDocumentMode(true);
+    
+    // Стилизация вкладок
+    tabWidget->setStyleSheet(
+        "QTabWidget::pane {"
+        "    border: none;"
+        "    background-color: #1e1e1e;"
+        "}"
+        "QTabWidget::tab-bar {"
+        "    alignment: left;"
+        "}"
+        "QTabBar::tab {"
+        "    background-color: #2d2d30;"
+        "    color: #cccccc;"
+        "    padding: 8px 16px;"
+        "    margin-right: 2px;"
+        "}"
+        "QTabBar::tab:selected {"
+        "    background-color: #1e1e1e;"
+        "    color: white;"
+        "    border-bottom: 2px solid #0e639c;"
+        "}"
+        "QTabBar::tab:hover:!selected {"
+        "    background-color: #383838;"
+        "}"
+        "QTabBar::close-button {"
+        "    image: url(close.png);"
+        "    subcontrol-position: right;"
+        "}"
+        "QTabBar::close-button:hover {"
+        "    background-color: #e81123;"
+        "    border-radius: 8px;"
+        "}"
+    );
     
     splitter->addWidget(explorerPanel);
-    splitter->addWidget(editor);     
+    splitter->addWidget(tabWidget);     
     
     // Обновляем stretch factors
     splitter->setStretchFactor(0, 3); // explorerPanel 
-    splitter->setStretchFactor(1, 7); // editor 
+    splitter->setStretchFactor(1, 7); // tabWidget 
     
     splitter->setChildrenCollapsible(false);
     
@@ -142,20 +181,25 @@ App::App(QWidget *parent) : QWidget(parent) {
     QMenu *fileMenu = menuBar->addMenu(tr("&File"));
     QMenu *runMenu = menuBar->addMenu(tr("&Run"));
     QMenu *viewMenu = menuBar->addMenu(tr("&View")); 
+    QMenu *windowMenu = menuBar->addMenu(tr("&Window")); // Новое меню для управления окнами
     
     // File Menu
     QAction *newAction = fileMenu->addAction(tr("&New"));
     QAction *openAction = fileMenu->addAction(tr("&Open"));
     QAction *saveAction = fileMenu->addAction(tr("&Save"));
+    QAction *saveAsAction = fileMenu->addAction(tr("Save &As"));
+    QAction *closeTabAction = fileMenu->addAction(tr("&Close Tab"));
     fileMenu->addSeparator();
     QAction *exitAction = fileMenu->addAction(tr("E&xit"));
 
     newAction->setShortcut(QKeySequence::New);
     openAction->setShortcut(QKeySequence::Open);
     saveAction->setShortcut(QKeySequence::Save);
+    saveAsAction->setShortcut(QKeySequence::SaveAs);
+    closeTabAction->setShortcut(QKeySequence::Close);
 
     // Run Menu 
-    QAction *runCurrentFile = runMenu->addAction(tr("&Run current file and save"));
+    QAction *runCurrentFile = runMenu->addAction(tr("&Run current file"));
     runCurrentFile->setShortcut(QKeySequence("F5")); 
 
     runMenu->addSeparator();
@@ -170,12 +214,29 @@ App::App(QWidget *parent) : QWidget(parent) {
     editorOnlyView->setShortcut(QKeySequence("Ctrl+1"));
     panelOnlyView->setShortcut(QKeySequence("Ctrl+2"));
 
+    // Window Menu - новые действия для управления вкладками
+    QAction *nextTabAction = windowMenu->addAction(tr("&Next Tab"));
+    QAction *prevTabAction = windowMenu->addAction(tr("&Previous Tab"));
+    windowMenu->addSeparator();
+    QAction *newTabAction = windowMenu->addAction(tr("&New Tab"));
+    
+    nextTabAction->setShortcut(QKeySequence("Ctrl+Tab"));
+    prevTabAction->setShortcut(QKeySequence("Ctrl+Shift+Tab"));
+    newTabAction->setShortcut(QKeySequence::AddTab);
+
     // Connect Actions
     connect(newAction, &QAction::triggered, this, &App::newFile);
     connect(openAction, &QAction::triggered, this, &App::openFile);
     connect(saveAction, &QAction::triggered, this, &App::saveFile);
+    connect(saveAsAction, &QAction::triggered, this, &App::saveAsFile);
+    connect(closeTabAction, &QAction::triggered, this, &App::closeCurrentTab);
     connect(exitAction, &QAction::triggered, this, &App::exitApp);
     connect(runCurrentFile, &QAction::triggered, this, &App::executePy);
+    
+    // Connect Window actions
+    connect(nextTabAction, &QAction::triggered, this, &App::nextTab);
+    connect(prevTabAction, &QAction::triggered, this, &App::prevTab);
+    connect(newTabAction, &QAction::triggered, this, &App::newTab);
     
     // Connect View actions 
     connect(toggleSplitView, &QAction::triggered, [splitter]() {
@@ -185,12 +246,12 @@ App::App(QWidget *parent) : QWidget(parent) {
     
     connect(editorOnlyView, &QAction::triggered, [splitter]() {
         splitter->widget(0)->setVisible(false); // explorerPanel 
-        splitter->widget(1)->setVisible(true);  // editor 
+        splitter->widget(1)->setVisible(true);  // tabWidget 
     });
     
     connect(panelOnlyView, &QAction::triggered, [splitter]() {
         splitter->widget(0)->setVisible(true);  // explorerPanel 
-        splitter->widget(1)->setVisible(false); // editor 
+        splitter->widget(1)->setVisible(false); // tabWidget 
     });
     
     // Connect проводник действий
@@ -200,9 +261,7 @@ App::App(QWidget *parent) : QWidget(parent) {
         }
         
         QString filePath = fileModel->filePath(index);
-        if (filePath.endsWith(".py") || filePath.endsWith(".txt")) {
-            this->openFileFromExplorer(filePath);
-        }
+        this->openFileInTab(filePath);
     });
     
     connect(openFolderBtn, &QPushButton::clicked, [this, fileTree, fileModel]() {
@@ -218,11 +277,10 @@ App::App(QWidget *parent) : QWidget(parent) {
         }
     });
     
-    // Исправленные connect с правильным захватом this
+    // Connect для создания новых файлов и папок
     connect(newFileBtn, &QPushButton::clicked, this, [this, fileModel, fileTree]() {
         this->newFile();
         
-        // Опционально: создать физический файл в текущей директории проводника
         QModelIndex currentIndex = fileTree->currentIndex();
         QString currentPath = currentIndex.isValid() ? fileModel->filePath(currentIndex) : fileModel->rootPath();
         
@@ -242,7 +300,6 @@ App::App(QWidget *parent) : QWidget(parent) {
             QFile file(newFilePath);
             if (file.open(QIODevice::WriteOnly)) {
                 file.close();
-                // Автоматическое обновление модели
                 refreshFileModel(fileModel, fileTree);
             }
         }
@@ -270,11 +327,16 @@ App::App(QWidget *parent) : QWidget(parent) {
         if (ok && !folderName.isEmpty()) {
             QDir dir(currentPath);
             if (dir.mkdir(folderName)) {
-                // Автоматическое обновление модели
                 refreshFileModel(fileModel, fileTree);
             }
         }
     });
+
+    // Connect для закрытия вкладок
+    connect(tabWidget, &QTabWidget::tabCloseRequested, this, &App::closeTab);
+    
+    // Connect для смены активной вкладки
+    connect(tabWidget, &QTabWidget::currentChanged, this, &App::onTabChanged);
 
     QFileSystemWatcher *fileWatcher = new QFileSystemWatcher(this);
     
@@ -316,27 +378,23 @@ App::App(QWidget *parent) : QWidget(parent) {
     layout->addWidget(menuBar);
     layout->addWidget(splitter);
 
-    // Start code in the editor
-    editor->setPlainText(
-        "def hello_world():\n"
-        "    # Это комментарий\n"
-        "    print(\"Hello, World!\")\n"
-        "    x = 42\n"
-        "    if x > 10:\n"
-        "        return True\n"
-        "    else:\n"
-        "        return False\n"
-        "\n"
-        "class MyClass:\n"
-        "    def __init__(self):\n"
-        "        self.value = 100\n" 
-        "\n"
-        "# Добавим вызов функции для тестирования\n"
-        "hello_world()\n"
-    );
-
-    // highlighting 
-    Parser *highlighter = new Parser(editor->document());
+    // Создаем начальную вкладку с примером кода
+    newTab();
+    CustomTextEdit *firstEditor = getCurrentEditor();
+    if (firstEditor) {
+        firstEditor->setPlainText(
+            "def func():\n"
+            "    # Say hello\n"
+            "    print('Hello, Malachite IDE!')\n"
+            "\n"
+            "func()\n"
+        );
+        
+        // highlighting для первой вкладки
+        new Parser(firstEditor->document());
+        
+        tabWidget->setTabText(0, "untitled.py");
+    }
 
     // Window settings
     setWindowTitle("Malachite IDE");
@@ -360,82 +418,317 @@ void App::refreshFileModel(QFileSystemModel *fileModel, QTreeView *fileTree) {
 }
 
 void App::openFileFromExplorer(const QString &filePath) {
+    openFileInTab(filePath);
+}
+
+void App::openFileInTab(const QString &filePath) {
+    // Проверяем, не открыт ли файл уже в другой вкладке
+    for (int i = 0; i < tabWidget->count(); ++i) {
+        CustomTextEdit *editor = qobject_cast<CustomTextEdit*>(tabWidget->widget(i));
+        if (editor && editor->property("filePath").toString() == filePath) {
+            tabWidget->setCurrentIndex(i);
+            return;
+        }
+    }
+    
     QFile file(filePath);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&file);
+        
+        // Автоматическое определение кодировки
+        in.setAutoDetectUnicode(true);
+        
         QString fileContent = in.readAll();
+        
+        // Создаем новую вкладку
+        CustomTextEdit *editor = createEditor();
         editor->setPlainText(fileContent);
+        editor->setProperty("filePath", filePath);
+        editor->setProperty("isModified", false);
+        editor->setProperty("originalContent", fileContent);
+        
+        QFileInfo fileInfo(filePath);
+        QString tabName = fileInfo.fileName();
+        int tabIndex = tabWidget->addTab(editor, tabName);
+        tabWidget->setCurrentIndex(tabIndex);
+        
+        // Добавляем подсветку синтаксиса только для Python файлов
+        if (filePath.endsWith(".py", Qt::CaseInsensitive)) {
+            new Parser(editor->document());
+        }
+        
+        // Connect для отслеживания изменений
+        connect(editor, &CustomTextEdit::textChanged, this, [this, editor, fileContent]() {
+            this->onEditorTextChanged(editor, fileContent);
+        });
+        
         file.close();
-        currentFilePath = filePath;
-        setWindowTitle("Malachite IDE - " + filePath);
+        updateWindowTitle();
     } else {
         QMessageBox::warning(this, "Error", "Error in file opening!");
     }
 }
 
+CustomTextEdit* App::createEditor() {
+    CustomTextEdit *editor = new CustomTextEdit(this);
+    editor->setStyleSheet(
+        "QPlainTextEdit {"
+        "    background-color: #1e1e1e;"
+        "    color: #d4d4d4;"
+        "    border: none;"
+        "    selection-background-color: #264f78;"
+        "    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;"
+        "    font-size: 14px;"
+        "    line-height: 1.4;"
+        "}"
+    );
+    return editor;
+}
+
+CustomTextEdit* App::getCurrentEditor() {
+    return qobject_cast<CustomTextEdit*>(tabWidget->currentWidget());
+}
+
+QString App::getCurrentFilePath() {
+    CustomTextEdit *editor = getCurrentEditor();
+    if (editor) {
+        return editor->property("filePath").toString();
+    }
+    return QString();
+}
+
 void App::newFile() {
-    editor->clear();
-    currentFilePath.clear();
-    setWindowTitle("Malachite IDE - New file");
+    newTab();
+}
+
+void App::newTab() {
+    CustomTextEdit *editor = createEditor();
+    editor->setProperty("filePath", QString());
+    editor->setProperty("isModified", false);
+    editor->setProperty("originalContent", "");
+    
+    int tabIndex = tabWidget->addTab(editor, "untitled.py");
+    tabWidget->setCurrentIndex(tabIndex);
+    
+    // Добавляем подсветку синтаксиса
+    new Parser(editor->document());
+    
+    // Connect для отслеживания изменений
+    connect(editor, &CustomTextEdit::textChanged, this, [this, editor]() {
+        this->onEditorTextChanged(editor, "");
+    });
+    
+    updateWindowTitle();
 }
 
 void App::openFile() {
     QString filePath = QFileDialog::getOpenFileName(nullptr, "Open file", "", "Python files (*.py);;Text files (*.txt);;All files (*)");
 
     if (!filePath.isEmpty()) {
-        QFile file(filePath);
-        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QTextStream in(&file);
-            QString fileContent = in.readAll();
-            editor->setPlainText(fileContent);
-            file.close();
-            currentFilePath = filePath;
-            setWindowTitle("Malachite IDE - " + filePath);
-        } else {
-            QMessageBox::warning(this, "Error", "Error in file opening!");
-        }
+        openFileInTab(filePath);
     }
 }
 
 void App::saveFile() {
-    QString fileName;
+    CustomTextEdit *editor = getCurrentEditor();
+    if (!editor) return;
     
-    if (currentFilePath.isEmpty()) {
-        fileName = QFileDialog::getSaveFileName(
-            editor,
-            "Save file",
-            "",
-            "Python files (*.py);;Text files (*.txt);;All files (*)"
-        );
-        if (!fileName.isEmpty()) {
-            if (!fileName.endsWith(".py") && !fileName.endsWith(".txt")) {
-                fileName += ".py";
+    // Проверяем, есть ли несохраненные изменения
+    if (!editor->property("isModified").toBool()) {
+        return; // Файл не изменялся, не нужно сохранять
+    }
+    
+    QString filePath = editor->property("filePath").toString();
+    
+    if (filePath.isEmpty()) {
+        saveAsFile();
+    } else {
+        saveTabContent(editor, filePath);
+    }
+}
+
+void App::saveAsFile() {
+    CustomTextEdit *editor = getCurrentEditor();
+    if (!editor) return;
+    
+    QString currentPath = editor->property("filePath").toString();
+    if (currentPath.isEmpty()) {
+        currentPath = QDir::homePath();
+    }
+    
+    QString filePath = QFileDialog::getSaveFileName(
+        this,
+        "Save file",
+        currentPath,
+        "Python files (*.py);;Text files (*.txt);;All files (*)"
+    );
+    
+    if (!filePath.isEmpty()) {
+        saveTabContent(editor, filePath);
+        
+        // Обновляем свойства вкладки
+        editor->setProperty("filePath", filePath);
+        editor->setProperty("isModified", false);
+        editor->setProperty("originalContent", editor->toPlainText());
+        
+        QFileInfo fileInfo(filePath);
+        tabWidget->setTabText(tabWidget->currentIndex(), fileInfo.fileName());
+        
+        updateWindowTitle();
+    }
+}
+
+void App::saveTabContent(CustomTextEdit *editor, const QString &filePath) {
+    QFile file(filePath);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&file);
+        QString content = editor->toPlainText();
+        out << content;
+        file.close();
+        
+        editor->setProperty("isModified", false);
+        editor->setProperty("originalContent", content);
+        updateTabTitle(tabWidget->currentIndex());
+    } else {
+        QMessageBox::warning(this, "Error", "Error in file saving!");
+    }
+}
+
+void App::closeCurrentTab() {
+    closeTab(tabWidget->currentIndex());
+}
+
+void App::closeTab(int index) {
+    if (index < 0) return;
+    
+    CustomTextEdit *editor = qobject_cast<CustomTextEdit*>(tabWidget->widget(index));
+    if (editor && editor->property("isModified").toBool()) {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Save changes", 
+                                    "The document has been modified. Do you want to save changes?",
+                                    QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        
+        if (reply == QMessageBox::Save) {
+            // Сохраняем только если есть изменения
+            if (editor->property("isModified").toBool()) {
+                saveFile();
             }
-            currentFilePath = fileName;
+        } else if (reply == QMessageBox::Cancel) {
+            return;
+        }
+    }
+    
+    tabWidget->removeTab(index);
+    
+    // Если вкладок не осталось, создаем новую
+    if (tabWidget->count() == 0) {
+        newTab();
+    }
+    
+    updateWindowTitle();
+}
+
+void App::nextTab() {
+    int current = tabWidget->currentIndex();
+    int next = (current + 1) % tabWidget->count();
+    tabWidget->setCurrentIndex(next);
+}
+
+void App::prevTab() {
+    int current = tabWidget->currentIndex();
+    int prev = (current - 1 + tabWidget->count()) % tabWidget->count();
+    tabWidget->setCurrentIndex(prev);
+}
+
+void App::onTabChanged(int index) {
+    updateWindowTitle();
+}
+
+void App::onEditorTextChanged(CustomTextEdit *editor, const QString &originalContent) {
+    QString currentContent = editor->toPlainText();
+    bool isModified = (currentContent != originalContent);
+    
+    if (editor->property("isModified").toBool() != isModified) {
+        editor->setProperty("isModified", isModified);
+        updateTabTitle(tabWidget->indexOf(editor));
+    }
+}
+
+void App::updateTabTitle(int index) {
+    if (index < 0) return;
+    
+    CustomTextEdit *editor = qobject_cast<CustomTextEdit*>(tabWidget->widget(index));
+    if (!editor) return;
+    
+    QString filePath = editor->property("filePath").toString();
+    QString title;
+    
+    if (filePath.isEmpty()) {
+        title = "untitled.py";
+    } else {
+        QFileInfo fileInfo(filePath);
+        title = fileInfo.fileName();
+    }
+    
+    if (editor->property("isModified").toBool()) {
+        title += " *";
+    }
+    
+    tabWidget->setTabText(index, title);
+}
+
+void App::updateWindowTitle() {
+    CustomTextEdit *editor = getCurrentEditor();
+    if (editor) {
+        QString filePath = editor->property("filePath").toString();
+        if (filePath.isEmpty()) {
+            setWindowTitle("Malachite IDE - untitled.py");
+        } else {
+            setWindowTitle("Malachite IDE - " + filePath);
         }
     } else {
-        fileName = currentFilePath;
-    }
-
-    if (!fileName.isEmpty()) {
-        QFile file(fileName);
-        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            QTextStream out(&file);
-            out << editor->toPlainText();
-            file.close();
-            setWindowTitle("Malachite IDE - " + fileName);
-        } else {
-            QMessageBox::warning(this, "Error", "Error in file saving!");
-        }
+        setWindowTitle("Malachite IDE");
     }
 }
 
 void App::executePy() {
-    saveFile();
+    CustomTextEdit *editor = getCurrentEditor();
+    if (!editor) return;
     
-    Executer::executePy(currentFilePath, this);
+    // Сохраняем файл только если он был изменен
+    if (editor->property("isModified").toBool()) {
+        saveFile();
+    }
+    
+    QString filePath = getCurrentFilePath();
+    if (!filePath.isEmpty()) {
+        Executer::executePy(filePath, this);
+    } else {
+        QMessageBox::warning(this, "Error", "No file to execute!");
+    }
 }
 
 void App::exitApp() {
+    // Check all tabs for unsaved changes
+    for (int i = 0; i < tabWidget->count(); ++i) {
+        CustomTextEdit *editor = qobject_cast<CustomTextEdit*>(tabWidget->widget(i));
+        if (editor && editor->property("isModified").toBool()) {
+            tabWidget->setCurrentIndex(i);
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question(this, "Save changes", 
+                                        "There are unsaved changes. Do you want to save before exiting?",
+                                        QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+            
+            if (reply == QMessageBox::Save) {
+                // Сохраняем только если есть изменения
+                if (editor->property("isModified").toBool()) {
+                    saveFile();
+                }
+            } else if (reply == QMessageBox::Cancel) {
+                return;
+            }
+        }
+    }
+    
     QApplication::quit();
 }

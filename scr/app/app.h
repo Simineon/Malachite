@@ -2,10 +2,10 @@
 #define APP_H
 
 #include <QWidget>
+#include <QTabWidget>
+#include <QFileSystemModel>
+#include <QTreeView>
 #include "../text/CustomTextEdit.h"
-
-class QFileSystemModel;
-class QTreeView;
 
 class App : public QWidget
 {
@@ -18,15 +18,33 @@ private slots:
     void newFile();
     void openFile();
     void saveFile();
-    void openFileFromExplorer(const QString &filePath);
-    void exitApp();
+    void saveAsFile();
     void executePy();
-
-private:
+    void exitApp();
+    void openFileFromExplorer(const QString &filePath);
     void refreshFileModel(QFileSystemModel *fileModel, QTreeView *fileTree);
     
-    CustomTextEdit *editor;
-    QString currentFilePath;
+    // Новые слоты для управления вкладками
+    void newTab();
+    void closeTab(int index);
+    void closeCurrentTab();
+    void nextTab();
+    void prevTab();
+    void onTabChanged(int index);
+    void onEditorTextChanged(CustomTextEdit *editor, const QString &originalName);
+
+private:
+    void openFileInTab(const QString &filePath);
+    CustomTextEdit* createEditor();
+    CustomTextEdit* getCurrentEditor();
+    QString getCurrentFilePath();
+    void saveTabContent(CustomTextEdit *editor, const QString &filePath);
+    void updateTabTitle(int index);
+    void updateWindowTitle();
+
+private:
+    QTabWidget *tabWidget;
+    QString currentFilePath; // Для обратной совместимости
 };
 
 #endif // APP_H
