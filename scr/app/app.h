@@ -3,9 +3,13 @@
 
 #include <QWidget>
 #include <QTabWidget>
-#include <QFileSystemModel>
-#include <QTreeView>
-#include "../text/CustomTextEdit.h"
+#include "tab/tab.h"
+
+class CustomTextEdit;
+class QMenuBar;
+class QSplitter;
+class QFileSystemModel;
+class QTreeView;
 
 class App : public QWidget
 {
@@ -19,32 +23,29 @@ private slots:
     void openFile();
     void saveFile();
     void saveAsFile();
-    void executePy();
     void exitApp();
-    void openFileFromExplorer(const QString &filePath);
-    void refreshFileModel(QFileSystemModel *fileModel, QTreeView *fileTree);
-    
-    // Новые слоты для управления вкладками
-    void newTab();
-    void closeTab(int index);
-    void closeCurrentTab();
-    void nextTab();
-    void prevTab();
-    void onTabChanged(int index);
-    void onEditorTextChanged(CustomTextEdit *editor, const QString &originalName);
-
-private:
-    void openFileInTab(const QString &filePath);
-    CustomTextEdit* createEditor();
-    CustomTextEdit* getCurrentEditor();
-    QString getCurrentFilePath();
-    void saveTabContent(CustomTextEdit *editor, const QString &filePath);
-    void updateTabTitle(int index);
+    void executePy();
     void updateWindowTitle();
 
 private:
-    QTabWidget *tabWidget;
-    QString currentFilePath; // Для обратной совместимости
+    void setupUI();
+    void setupMenuBar();
+    void setupFileExplorer();
+    void setupConnections();
+    
+    CustomTextEdit* createEditor();
+    CustomTextEdit* getCurrentEditor();
+    QString getCurrentFilePath();
+    void openFileInTab(const QString &filePath);
+    void refreshFileModel(QFileSystemModel *fileModel, QTreeView *fileTree);
+
+    // UI Components
+    QMenuBar *menuBar;
+    QSplitter *splitter;
+    Tab *tabWidget;
+    QFileSystemModel *fileModel;
+    QTreeView *fileTree;
+    QWidget *explorerPanel;
 };
 
 #endif // APP_H
