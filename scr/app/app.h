@@ -2,44 +2,54 @@
 #define APP_H
 
 #include <QWidget>
-#include <QTabWidget>
+#include <QMenuBar>
+#include <QSplitter>
+#include <QFileSystemModel>
+#include <QTreeView>
+#include <QModelIndex>
 #include "tab/tab.h"
-
-class CustomTextEdit;
-class QMenuBar;
-class QSplitter;
-class QFileSystemModel;
-class QTreeView;
 
 class App : public QWidget
 {
     Q_OBJECT
 
 public:
-    App(QWidget *parent = nullptr);
+    explicit App(QWidget *parent = nullptr);
+    CustomTextEdit* createEditor();
+    CustomTextEdit* getCurrentEditor();
+    QString getCurrentFilePath();
 
 private slots:
     void newFile();
     void openFile();
+    void openFileInTab(const QString &filePath);
     void saveFile();
     void saveAsFile();
-    void exitApp();
     void executePy();
+    void exitApp();
     void updateWindowTitle();
+    
+    // File Explorer slots
+    void onFileDoubleClicked(const QModelIndex &index);
+    void openFolder();
+    void createNewFileInExplorer();
+    void createNewFolderInExplorer();
+    void refreshFileExplorer();
+    
+    // View menu slots
+    void toggleSplitView();
+    void showEditorOnly();
+    void showPanelOnly();
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 private:
     void setupUI();
     void setupMenuBar();
     void setupFileExplorer();
     void setupConnections();
-    
-    CustomTextEdit* createEditor();
-    CustomTextEdit* getCurrentEditor();
-    QString getCurrentFilePath();
-    void openFileInTab(const QString &filePath);
-    void refreshFileModel(QFileSystemModel *fileModel, QTreeView *fileTree);
 
-    // UI Components
     QMenuBar *menuBar;
     QSplitter *splitter;
     Tab *tabWidget;

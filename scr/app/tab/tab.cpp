@@ -46,13 +46,11 @@ void Tab::setupTabWidget()
         "    background-color: #383838;"
         "}"
         "QTabBar::close-button {"
-        "    image: url(close.png);"
         "    subcontrol-position: right;"
+        "    width: 16px;"
+        "    height: 16px;"
         "}"
-        "QTabBar::close-button:hover {"
-        "    background-color: #e81123;"
-        "    border-radius: 8px;"
-        "}"
+
     );
 
     // Connect для закрытия вкладок

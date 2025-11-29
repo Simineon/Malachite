@@ -30,6 +30,7 @@
 #include <QTabWidget>
 #include <QToolBar>
 #include <QToolButton>
+#include <QCloseEvent>
 #include "../parser/parser.h"
 #include "execute/executer.h"
 #include "../text/CustomTextEdit.h"
@@ -65,26 +66,29 @@ App::App(QWidget *parent) : QWidget(parent)
 
     // Window settings
     setWindowTitle("Malachite IDE");
-    setMinimumSize(1000, 800);
-    setMaximumSize(1600, 1000);
+    setMinimumSize(800, 600);
+    resize(1000, 700);
 }
 
 void App::setupUI() {
+    // Создаем главный layout
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    
+    // Создаем menuBar как дочерний виджет
     menuBar = new QMenuBar(this);
     
-    // splitter
+    // Создаем splitter
     splitter = new QSplitter(Qt::Horizontal, this);
     
     // Создаем Tab widget
     tabWidget = new Tab(this);
     splitter->addWidget(tabWidget);
     
-    // Основной layout
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
+    // Добавляем в layout
     layout->addWidget(menuBar);
-    layout->addWidget(splitter);
+    layout->addWidget(splitter, 1);
 }
 
 void App::setupMenuBar() {
@@ -113,16 +117,16 @@ void App::setupMenuBar() {
     QAction *runCurrentFile = runMenu->addAction(tr("&Run current file"));
     runCurrentFile->setShortcut(QKeySequence("F5")); 
     runMenu->addSeparator();
-    exitAction = runMenu->addAction(tr("E&xit"));
+    QAction *exitRunAction = runMenu->addAction(tr("E&xit"));
     
     // View Menu
-    QAction *toggleSplitView = viewMenu->addAction(tr("&Toggle Split View"));
-    QAction *editorOnlyView = viewMenu->addAction(tr("&Editor Only"));
-    QAction *panelOnlyView = viewMenu->addAction(tr("&Panel Only"));
+    QAction *toggleSplitViewAction = viewMenu->addAction(tr("&Toggle Split View"));
+    QAction *editorOnlyViewAction = viewMenu->addAction(tr("&Editor Only"));
+    QAction *panelOnlyViewAction = viewMenu->addAction(tr("&Panel Only"));
     
-    toggleSplitView->setShortcut(QKeySequence("Ctrl+\\"));
-    editorOnlyView->setShortcut(QKeySequence("Ctrl+1"));
-    panelOnlyView->setShortcut(QKeySequence("Ctrl+2"));
+    toggleSplitViewAction->setShortcut(QKeySequence("Ctrl+\\"));
+    editorOnlyViewAction->setShortcut(QKeySequence("Ctrl+1"));
+    panelOnlyViewAction->setShortcut(QKeySequence("Ctrl+2"));
 
     // Window Menu - настраиваем через Tab класс
     tabWidget->setupWindowMenu(windowMenu);
@@ -134,49 +138,123 @@ void App::setupMenuBar() {
     connect(saveAsAction, &QAction::triggered, this, &App::saveAsFile);
     connect(closeTabAction, &QAction::triggered, tabWidget, &Tab::closeCurrentTab);
     connect(exitAction, &QAction::triggered, this, &App::exitApp);
+    connect(exitRunAction, &QAction::triggered, this, &App::exitApp);
     connect(runCurrentFile, &QAction::triggered, this, &App::executePy);
     
-    // Connect для обновления заголовка окна при смене вкладки - ИСПРАВЛЕНО
+    // Connect для обновления заголовка окна при смене вкладки
     connect(tabWidget, &Tab::currentChanged, this, &App::updateWindowTitle);
+    
+    // Connect для действий View Menu
+    connect(toggleSplitViewAction, &QAction::triggered, this, &App::toggleSplitView);
+    connect(editorOnlyViewAction, &QAction::triggered, this, &App::showEditorOnly);
+    connect(panelOnlyViewAction, &QAction::triggered, this, &App::showPanelOnly);
 }
 
 void App::setupFileExplorer() {
     // left panel - explorer
-    explorerPanel = new QWidget(this); // Теперь это член класса
-    explorerPanel->setStyleSheet("background-color: #262626; border: 1px solid #212121;");
+    explorerPanel = new QWidget(this);
+    
+    // Улучшенные стили для Linux
+    QString panelStyle = 
+        "QWidget {"
+        "    background-color: #2d2d30;"
+        "    border: 1px solid #1e1e1e;"
+        "}"
+        "QLabel {"
+        "    font-weight: bold;"
+        "    padding: 8px;"
+        "    background-color: #252526;"
+        "    color: #cccccc;"
+        "    border-bottom: 1px solid #1e1e1e;"
+        "}"
+        "QPushButton {"
+        "    background-color: #0e639c;"
+        "    color: white;"
+        "    border: none;"
+        "    padding: 6px 12px;"
+        "    border-radius: 4px;"
+        "    font-size: 12px;"
+        "    min-height: 20px;"
+        "}"
+        "QPushButton:hover {"
+        "    background-color: #1177bb;"
+        "}"
+        "QPushButton:pressed {"
+        "    background-color: #0c547d;"
+        "}"
+        "QPushButton:disabled {"
+        "    background-color: #464647;"
+        "    color: #969696;"
+        "}";
+    
+    explorerPanel->setStyleSheet(panelStyle);
     
     QVBoxLayout *leftLayout = new QVBoxLayout(explorerPanel);
+    leftLayout->setContentsMargins(0, 0, 0, 0);
+    leftLayout->setSpacing(0);
     
     QLabel *explorerLabel = new QLabel("File Explorer");
-    explorerLabel->setStyleSheet("font-weight: bold; padding: 5px; background-color: #161616; color: white;");
     explorerLabel->setAlignment(Qt::AlignCenter);
     leftLayout->addWidget(explorerLabel);
     
+    // Toolbar для файловых операций
+    QWidget *toolbar = new QWidget(this);
+    toolbar->setStyleSheet("background-color: #333337; padding: 4px;");
+    QHBoxLayout *toolbarLayout = new QHBoxLayout(toolbar);
+    toolbarLayout->setContentsMargins(4, 4, 4, 4);
+    toolbarLayout->setSpacing(4);
+    
+    QPushButton *openFolderBtn = new QPushButton("Open Folder");
+    QPushButton *newFileBtn = new QPushButton("New File");
+    QPushButton *newFolderBtn = new QPushButton("New Folder");
+    QPushButton *refreshBtn = new QPushButton("Refresh");
+    
+    // Устанавливаем одинаковый размер для кнопок
+    openFolderBtn->setFixedHeight(28);
+    newFileBtn->setFixedHeight(28);
+    newFolderBtn->setFixedHeight(28);
+    refreshBtn->setFixedHeight(28);
+    
+    toolbarLayout->addWidget(openFolderBtn);
+    toolbarLayout->addWidget(newFileBtn);
+    toolbarLayout->addWidget(newFolderBtn);
+    toolbarLayout->addWidget(refreshBtn);
+    toolbarLayout->addStretch();
+    
+    leftLayout->addWidget(toolbar);
+    
+    // File system model and tree view
     fileModel = new QFileSystemModel(this);
     fileModel->setRootPath(QDir::homePath());
+    fileModel->setFilter(QDir::AllEntries | QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files);
+    fileModel->setNameFilters(QStringList() << "*.py" << "*.txt" << "*.md" << "*.json" << "*.xml");
+    fileModel->setNameFilterDisables(false);
     
     fileTree = new QTreeView(this);
     fileTree->setModel(fileModel);
     fileTree->setRootIndex(fileModel->index(QDir::homePath()));
-    fileTree->setAnimated(false);
-    fileTree->setIndentation(15);
+    fileTree->setAnimated(true);
+    fileTree->setIndentation(20);
     fileTree->setSortingEnabled(true);
     
-    // column settings
+    // Column settings
     fileTree->setHeaderHidden(false);
-    fileTree->setColumnHidden(1, true); // Unshow Size column
-    fileTree->setColumnHidden(2, true); // Unshow Type column
-    fileTree->setColumnHidden(3, true); // Unshow Date Modified column
+    fileTree->setColumnHidden(1, true); // Hide Size column
+    fileTree->setColumnHidden(2, true); // Hide Type column
+    fileTree->setColumnHidden(3, true); // Hide Date Modified column
     
+    // Стили для tree view
     fileTree->setStyleSheet(
         "QTreeView {"
         "    background-color: #1e1e1e;"
         "    color: #d4d4d4;"
         "    border: none;"
         "    outline: 0;"
+        "    font-size: 12px;"
         "}"
         "QTreeView::item {"
-        "    padding: 2px;"
+        "    padding: 4px;"
+        "    border: none;"
         "}"
         "QTreeView::item:hover {"
         "    background-color: #2a2d2e;"
@@ -187,85 +265,138 @@ void App::setupFileExplorer() {
         "QHeaderView::section {"
         "    background-color: #2d2d30;"
         "    color: #cccccc;"
-        "    padding: 4px;"
+        "    padding: 6px;"
         "    border: 1px solid #3e3e42;"
+        "    font-weight: bold;"
         "}"
     );
     
-    QWidget *toolbar = new QWidget(this);
-    QHBoxLayout *toolbarLayout = new QHBoxLayout(toolbar);
-    toolbarLayout->setContentsMargins(5, 2, 5, 2);
+    leftLayout->addWidget(fileTree, 1);
     
-    QPushButton *openFolderBtn = new QPushButton("Open Folder");
-    QPushButton *newFileBtn = new QPushButton("New File");
-    QPushButton *newFolderBtn = new QPushButton("New Folder");
-    
-    QString buttonStyle = 
-        "QPushButton {"
-        "    background-color: #0e639c;"
-        "    color: white;"
-        "    border: none;"
-        "    padding: 4px 8px;"
-        "    border-radius: 3px;"
-        "    font-size: 11px;"
-        "}"
-        "QPushButton:hover {"
-        "    background-color: #1177bb;"
-        "}"
-        "QPushButton:pressed {"
-        "    background-color: #0c547d;"
-        "}";
-    
-    openFolderBtn->setStyleSheet(buttonStyle);
-    newFileBtn->setStyleSheet(buttonStyle);
-    newFolderBtn->setStyleSheet(buttonStyle);
-    
-    toolbarLayout->addWidget(openFolderBtn);
-    toolbarLayout->addWidget(newFileBtn);
-    toolbarLayout->addWidget(newFolderBtn);
-    toolbarLayout->addStretch();
-    
-    leftLayout->addWidget(toolbar);
-    leftLayout->addWidget(fileTree);
-    
+    // Добавляем explorer panel в splitter
     splitter->insertWidget(0, explorerPanel);
     
-    // Обновляем stretch factors
-    splitter->setStretchFactor(0, 3); // explorerPanel 
-    splitter->setStretchFactor(1, 7); // tabWidget 
+    // Настройка размеров splitter
+    QList<int> sizes;
+    sizes << 280 << 720;
+    splitter->setSizes(sizes);
     
     splitter->setChildrenCollapsible(false);
+    splitter->setHandleWidth(2);
+    
+    // Connect кнопок
+    connect(openFolderBtn, &QPushButton::clicked, this, &App::openFolder);
+    connect(newFileBtn, &QPushButton::clicked, this, &App::createNewFileInExplorer);
+    connect(newFolderBtn, &QPushButton::clicked, this, &App::createNewFolderInExplorer);
+    connect(refreshBtn, &QPushButton::clicked, this, &App::refreshFileExplorer);
 }
 
 void App::setupConnections() {
-    connect(fileTree, &QTreeView::doubleClicked, [this](const QModelIndex &index) {
-        if (fileModel->isDir(index)) {
-            return; 
-        }
-        
-        QString filePath = fileModel->filePath(index);
-        this->openFileInTab(filePath);
-    });
+    connect(fileTree, &QTreeView::doubleClicked, this, &App::onFileDoubleClicked);
+}
+
+void App::onFileDoubleClicked(const QModelIndex &index) {
+    if (fileModel->isDir(index)) {
+        return; 
+    }
     
-    // Ищем кнопки в toolbar - ИСПРАВЛЕНО
-    QWidget *toolbar = explorerPanel->findChild<QWidget*>();
-    if (toolbar) {
-        QPushButton *openFolderBtn = toolbar->findChild<QPushButton*>();
-        if (openFolderBtn) {
-            connect(openFolderBtn, &QPushButton::clicked, [this]() {
-                QString folderPath = QFileDialog::getExistingDirectory(
-                    this,
-                    "Select Folder",
-                    QDir::homePath(),
-                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
-                );
-                
-                if (!folderPath.isEmpty()) {
-                    fileTree->setRootIndex(fileModel->index(folderPath));
-                }
-            });
+    QString filePath = fileModel->filePath(index);
+    this->openFileInTab(filePath);
+}
+
+void App::openFolder() {
+    QString folderPath = QFileDialog::getExistingDirectory(
+        this,
+        "Select Folder",
+        QDir::homePath(),
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
+    );
+    
+    if (!folderPath.isEmpty()) {
+        fileTree->setRootIndex(fileModel->index(folderPath));
+    }
+}
+
+void App::createNewFileInExplorer() {
+    QModelIndex currentIndex = fileTree->currentIndex();
+    QString parentDir = currentIndex.isValid() ? fileModel->filePath(currentIndex) : fileModel->rootPath();
+    
+    if (!fileModel->isDir(currentIndex) && currentIndex.isValid()) {
+        parentDir = fileModel->filePath(currentIndex.parent());
+    }
+    
+    bool ok;
+    QString fileName = QInputDialog::getText(this, "New File", 
+                                           "Enter file name:", 
+                                           QLineEdit::Normal, 
+                                           "new_file.py", 
+                                           &ok);
+    
+    if (ok && !fileName.isEmpty()) {
+        QString filePath = QDir(parentDir).filePath(fileName);
+        QFile file(filePath);
+        if (file.open(QIODevice::WriteOnly)) {
+            file.close();
+            // Обновляем модель
+            refreshFileExplorer();
+        } else {
+            QMessageBox::warning(this, "Error", "Could not create file: " + file.errorString());
         }
     }
+}
+
+void App::createNewFolderInExplorer() {
+    QModelIndex currentIndex = fileTree->currentIndex();
+    QString parentDir = currentIndex.isValid() ? fileModel->filePath(currentIndex) : fileModel->rootPath();
+    
+    if (!fileModel->isDir(currentIndex) && currentIndex.isValid()) {
+        parentDir = fileModel->filePath(currentIndex.parent());
+    }
+    
+    bool ok;
+    QString folderName = QInputDialog::getText(this, "New Folder", 
+                                             "Enter folder name:", 
+                                             QLineEdit::Normal, 
+                                             "NewFolder", 
+                                             &ok);
+    
+    if (ok && !folderName.isEmpty()) {
+        QDir dir(parentDir);
+        if (dir.mkdir(folderName)) {
+            refreshFileExplorer();
+        } else {
+            QMessageBox::warning(this, "Error", "Could not create folder");
+        }
+    }
+}
+
+void App::refreshFileExplorer() {
+    QModelIndex currentRoot = fileTree->rootIndex();
+    // Для обновления модели в Qt используем setRootPath с текущим путем
+    QString currentPath = fileModel->filePath(currentRoot);
+    fileModel->setRootPath("");
+    fileModel->setRootPath(currentPath);
+}
+
+void App::toggleSplitView() {
+    if (explorerPanel->isVisible()) {
+        explorerPanel->hide();
+    } else {
+        explorerPanel->show();
+    }
+}
+
+void App::showEditorOnly() {
+    explorerPanel->hide();
+}
+
+void App::showPanelOnly() {
+    explorerPanel->show();
+    tabWidget->hide();
+    // Восстанавливаем разделение при следующем переключении
+    QTimer::singleShot(100, [this]() {
+        tabWidget->show();
+    });
 }
 
 void App::newFile() {
@@ -273,7 +404,12 @@ void App::newFile() {
 }
 
 void App::openFile() {
-    QString filePath = QFileDialog::getOpenFileName(nullptr, "Open file", "", "Python files (*.py);;Text files (*.txt);;All files (*)");
+    QString filePath = QFileDialog::getOpenFileName(
+        this, 
+        "Open file", 
+        QDir::homePath(), 
+        "Python files (*.py);;Text files (*.txt);;All files (*)"
+    );
 
     if (!filePath.isEmpty()) {
         openFileInTab(filePath);
@@ -337,7 +473,8 @@ void App::updateWindowTitle() {
     if (filePath.isEmpty()) {
         setWindowTitle("Malachite IDE - untitled.py");
     } else {
-        setWindowTitle("Malachite IDE - " + filePath);
+        QFileInfo fileInfo(filePath);
+        setWindowTitle("Malachite IDE - " + fileInfo.fileName() + " [" + fileInfo.path() + "]");
     }
 }
 
@@ -359,43 +496,57 @@ void App::executePy() {
 }
 
 void App::exitApp() {
+    close();
+}
+
+void App::closeEvent(QCloseEvent *event) {
     // Check all tabs for unsaved changes
+    bool hasUnsavedChanges = false;
+    
     for (int i = 0; i < tabWidget->count(); ++i) {
         CustomTextEdit *editor = qobject_cast<CustomTextEdit*>(tabWidget->widget(i));
         if (editor && editor->property("isModified").toBool()) {
-            tabWidget->setCurrentIndex(i);
-            QMessageBox::StandardButton reply;
-            reply = QMessageBox::question(this, "Save changes", 
-                                        "There are unsaved changes. Do you want to save before exiting?",
-                                        QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-            
-            if (reply == QMessageBox::Save) {
-                // Сохраняем только если есть изменения
-                if (editor->property("isModified").toBool()) {
-                    saveFile();
-                }
-            } else if (reply == QMessageBox::Cancel) {
-                return;
-            }
+            hasUnsavedChanges = true;
+            break;
         }
     }
     
-    QApplication::quit();
-}
-
-void App::refreshFileModel(QFileSystemModel *fileModel, QTreeView *fileTree) {
-    QModelIndex currentRoot = fileTree->rootIndex();
-    QString currentPath = fileModel->filePath(currentRoot);
-    
-    fileTree->collapseAll();
-    
-    fileModel->setRootPath("");
-    fileModel->setRootPath(currentPath);
-    fileTree->setRootIndex(fileModel->index(currentPath));
-    
-    if (currentRoot.isValid()) {
-        fileTree->setRootIndex(fileModel->index(currentPath));
+    if (hasUnsavedChanges) {
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Save changes", 
+                                    "There are unsaved changes. Do you want to save before exiting?",
+                                    QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        
+        if (reply == QMessageBox::Save) {
+            // Сохраняем все измененные вкладки
+            for (int i = 0; i < tabWidget->count(); ++i) {
+                CustomTextEdit *editor = qobject_cast<CustomTextEdit*>(tabWidget->widget(i));
+                if (editor && editor->property("isModified").toBool()) {
+                    tabWidget->setCurrentIndex(i);
+                    QString filePath = editor->property("filePath").toString();
+                    if (filePath.isEmpty()) {
+                        // Для файлов без пути предлагаем Save As
+                        QString newFilePath = QFileDialog::getSaveFileName(
+                            this,
+                            "Save file",
+                            QDir::homePath(),
+                            "Python files (*.py);;Text files (*.txt);;All files (*)"
+                        );
+                        if (!newFilePath.isEmpty()) {
+                            tabWidget->saveTabContent(editor, newFilePath);
+                        }
+                    } else {
+                        tabWidget->saveTabContent(editor, filePath);
+                    }
+                }
+            }
+        } else if (reply == QMessageBox::Cancel) {
+            event->ignore();
+            return;
+        }
     }
+    
+    event->accept();
 }
 
 CustomTextEdit* App::createEditor() {
