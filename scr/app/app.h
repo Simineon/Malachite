@@ -7,6 +7,8 @@
 #include <QFileSystemModel>
 #include <QTreeView>
 #include <QModelIndex>
+#include <QStatusBar>
+#include <QLabel>
 #include "tab/tab.h"
 
 class App : public QWidget
@@ -28,6 +30,7 @@ private slots:
     void executePy();
     void exitApp();
     void updateWindowTitle();
+    void updateCursorInfo();
     
     // File Explorer slots
     void onFileDoubleClicked(const QModelIndex &index);
@@ -57,6 +60,10 @@ private:
     QFileSystemModel *fileModel;
     QTreeView *fileTree;
     QWidget *explorerPanel;
+    QStatusBar *statusBar;
+    QLabel *lineLabel;
+    QLabel *indentLabel;
+    QMetaObject::Connection currentEditorCursorConnection;
 };
 
 #endif // APP_H

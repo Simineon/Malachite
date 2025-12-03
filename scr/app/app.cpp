@@ -36,20 +36,22 @@
 #include "execute/executer.h"
 #include "../text/CustomTextEdit.h"
 
-App::App(QWidget *parent) : QWidget(parent) 
+App::App(QWidget *parent) 
+    : QWidget(parent)
     , menuBar(nullptr)
     , splitter(nullptr)
     , tabWidget(nullptr)
     , fileModel(nullptr)
     , fileTree(nullptr)
     , explorerPanel(nullptr)
+    , statusBar(nullptr)
 {
     setupUI();
     setupMenuBar();
     setupFileExplorer();
     setupConnections();
+    setupStatusBar(); 
 
-    // Создаем начальную вкладку с примером кода
     tabWidget->newTab();
     CustomTextEdit *firstEditor = tabWidget->getCurrentEditor();
     
@@ -86,9 +88,7 @@ void App::setupUI() {
     tabWidget = new Tab(this);
     splitter->addWidget(tabWidget);
 
-    // Status bar
-    QStatusBar *statusBar = new QStatusBar(this);
-    statusBar->showMessage("Status: ");
+    statusBar = new QStatusBar(this);
 
     // Add in layout
     layout->addWidget(menuBar);
@@ -97,7 +97,59 @@ void App::setupUI() {
 }
 
 void App::setupStatusBar() {
+    if (!statusBar) return;
     
+    // Main style
+    statusBar->setStyleSheet("QStatusBar {background-color: #306442;}");
+
+    // Clearing status bar
+    statusBar->clearMessage();
+    
+    lineLabel = new QLabel("Ln: 1, Col: 1", statusBar);
+    indentLabel = new QLabel("Indent: Spaces", statusBar);
+
+    lineLabel->setStyleSheet("QLabel { padding: 0 8px; border: none; }");
+    indentLabel->setStyleSheet("QLabel { padding: 0 8px; border: none; border-left: 1px solid #cbcbcb; }");
+    
+    statusBar->addPermanentWidget(lineLabel);
+    statusBar->addPermanentWidget(indentLabel);
+    
+    // Отображаем начальное состояние
+    updateCursorInfo();
+}
+
+void App::updateCursorInfo() {
+    CustomTextEdit *editor = tabWidget->getCurrentEditor();
+    if (!editor) {
+        lineLabel->setText("Ln: -, Col: -");
+        indentLabel->setText("Indent: -");
+        return;
+    }
+    
+    QTextCursor cursor = editor->textCursor();
+    int line = cursor.blockNumber() + 1;
+    int column = cursor.positionInBlock() + 1;
+    
+    // Updating information in Status bar
+    lineLabel->setText(QString("Ln: %1, Col: %2").arg(line).arg(column));
+    
+    QTextBlock block = cursor.block();
+    QString lineText = block.text();
+    int indentLevel = 0;
+    
+    // Подсчитываем отступ в начале строки
+    while (indentLevel < lineText.length() && lineText.at(indentLevel).isSpace()) {
+        indentLevel++;
+    }
+    
+    // Определяем, используются ли табы или пробелы
+    QString indentType = "Spaces";
+    if (indentLevel > 0 && lineText.at(0) == '\t') {
+        indentType = "Tabs";
+    }
+    
+    // Show informations 
+    indentLabel->setText(QString("Indent: %1 (%2)").arg(indentType).arg(indentLevel));
 }
 
 void App::setupMenuBar() {
@@ -150,10 +202,15 @@ void App::setupMenuBar() {
     connect(exitRunAction, &QAction::triggered, this, &App::exitApp);
     connect(runCurrentFile, &QAction::triggered, this, &App::executePy);
     
-    // Connect 
+    // Connect для обновления заголовка окна
     connect(tabWidget, &Tab::currentChanged, this, &App::updateWindowTitle);
     
-    // Connect
+    // Connect для обновления информации о курсоре при смене вкладки
+    connect(tabWidget, &Tab::currentChanged, this, [this]() {
+        updateCursorInfo();
+    });
+    
+    // Connect для изменения вида
     connect(toggleSplitViewAction, &QAction::triggered, this, &App::toggleSplitView);
     connect(editorOnlyViewAction, &QAction::triggered, this, &App::showEditorOnly);
     connect(panelOnlyViewAction, &QAction::triggered, this, &App::showPanelOnly);
@@ -297,6 +354,23 @@ void App::setupFileExplorer() {
 
 void App::setupConnections() {
     connect(fileTree, &QTreeView::doubleClicked, this, &App::onFileDoubleClicked);
+    
+    // Connect для отслеживания движения курсора во всех редакторах
+    connect(tabWidget, &Tab::currentChanged, this, [this]() {
+        // Отключаем предыдущие соединения
+        if (currentEditorCursorConnection) {
+            disconnect(currentEditorCursorConnection);
+        }
+        
+        // Подключаемся к новому редактору
+        CustomTextEdit *editor = tabWidget->getCurrentEditor();
+        if (editor) {
+            currentEditorCursorConnection = connect(editor, &CustomTextEdit::cursorPositionChanged,
+                                                  this, &App::updateCursorInfo);
+        }
+        
+        updateCursorInfo();
+    });
 }
 
 void App::onFileDoubleClicked(const QModelIndex &index) {

@@ -22,7 +22,6 @@ void Tab::setupTabWidget()
     setMovable(true);
     setDocumentMode(true);
 
-    // Стилизация вкладок
     setStyleSheet(
         "QTabWidget::pane {"
         "    border: none;"
@@ -53,10 +52,8 @@ void Tab::setupTabWidget()
 
     );
 
-    // Connect для закрытия вкладок
     connect(this, &QTabWidget::tabCloseRequested, this, &Tab::closeTab);
     
-    // Connect для смены активной вкладки
     connect(this, &QTabWidget::currentChanged, this, &Tab::onTabChanged);
 }
 
@@ -102,7 +99,6 @@ CustomTextEdit* Tab::createEditor()
         "}"
     );
     
-    // Применяем стиль нумерации строк ко всем новым редакторам
     editor->setLineNumberAreaBackground(QColor(50, 50, 50));
     editor->setLineNumberColor(QColor(200, 200, 200));
     editor->setCurrentLineHighlight(QColor(80, 80, 120));
@@ -136,18 +132,19 @@ void Tab::newTab()
     int tabIndex = addTab(editor, "untitled.py");
     setCurrentIndex(tabIndex);
     
-    // Добавляем подсветку синтаксиса
     new Parser(editor->document());
     
-    // Connect для отслеживания изменений
     connect(editor, &CustomTextEdit::textChanged, this, [this, editor]() {
         this->onEditorTextChanged(editor, "");
+    });
+    
+    connect(editor, &CustomTextEdit::cursorPositionChanged, this, [this]() {
+        emit cursorPositionChanged();
     });
 }
 
 void Tab::openFileInTab(const QString &filePath)
 {
-    // Проверяем, не открыт ли файл уже в другой вкладке
     for (int i = 0; i < count(); ++i) {
         CustomTextEdit *editor = qobject_cast<CustomTextEdit*>(widget(i));
         if (editor && editor->property("filePath").toString() == filePath) {
@@ -160,13 +157,12 @@ void Tab::openFileInTab(const QString &filePath)
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&file);
         
-        // Автоматическое определение кодировки
+
         in.setAutoDetectUnicode(true);
         
         QString fileContent = in.readAll();
         
-        // Создаем новую вкладку
-        CustomTextEdit *editor = createEditor(); // Используем createEditor для применения стиля
+        CustomTextEdit *editor = createEditor(); 
         editor->setPlainText(fileContent);
         editor->setProperty("filePath", filePath);
         editor->setProperty("isModified", false);
@@ -177,14 +173,16 @@ void Tab::openFileInTab(const QString &filePath)
         int tabIndex = addTab(editor, tabName);
         setCurrentIndex(tabIndex);
         
-        // Добавляем подсветку синтаксиса только для Python файлов
         if (filePath.endsWith(".py", Qt::CaseInsensitive)) {
             new Parser(editor->document());
         }
         
-        // Connect для отслеживания изменений
         connect(editor, &CustomTextEdit::textChanged, this, [this, editor, fileContent]() {
             this->onEditorTextChanged(editor, fileContent);
+        });
+        
+        connect(editor, &CustomTextEdit::cursorPositionChanged, this, [this]() {
+            emit cursorPositionChanged();
         });
         
         file.close();
@@ -230,7 +228,6 @@ void Tab::closeTab(int index)
         if (reply == QMessageBox::Save) {
             QString filePath = editor->property("filePath").toString();
             if (filePath.isEmpty()) {
-                // Если файл не сохранен, вызываем saveAs через родителя
                 emit requestSaveAs();
                 return;
             } else {
@@ -243,7 +240,6 @@ void Tab::closeTab(int index)
     
     removeTab(index);
     
-    // Если вкладок не осталось, создаем новую
     if (count() == 0) {
         newTab();
     }
@@ -267,6 +263,7 @@ void Tab::onTabChanged(int index)
 {
     Q_UNUSED(index)
     emit currentTabChanged();
+    emit cursorPositionChanged();
 }
 
 void Tab::onEditorTextChanged(CustomTextEdit *editor, const QString &originalContent)

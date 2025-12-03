@@ -4,8 +4,8 @@
 #include <QTabWidget>
 #include <QAction>
 #include <QMenu>
-#include "../../text/CustomTextEdit.h"
 #include "../../parser/parser.h"
+#include "../../text/CustomTextEdit.h"
 
 class Tab : public QTabWidget
 {
@@ -14,39 +14,35 @@ class Tab : public QTabWidget
 public:
     explicit Tab(QWidget *parent = nullptr);
     
-    // File operations
-    void newTab();
-    void openFileInTab(const QString &filePath);
-    void saveTabContent(CustomTextEdit *editor, const QString &filePath);
-    void closeTab(int index);
-    
-    // Tab navigation
-    void nextTab();
-    void prevTab();
-    
-    // Editor management
+    void setupWindowMenu(QMenu *windowMenu);
     CustomTextEdit* createEditor();
     CustomTextEdit* getCurrentEditor();
     QString getCurrentFilePath();
     
-    // Menu setup
-    void setupWindowMenu(QMenu *windowMenu);
-
-public slots:
+    void openFileInTab(const QString &filePath);
+    void saveTabContent(CustomTextEdit *editor, const QString &filePath);
     void closeCurrentTab();
-    void onTabChanged(int index);
-    void onEditorTextChanged(CustomTextEdit *editor, const QString &originalContent);
     void updateTabTitle(int index);
 
+public slots:
+    void newTab();
+    void nextTab();
+    void prevTab();
+    void closeTab(int index);
+
 signals:
-    void requestSaveAs(); 
-    void currentTabChanged(); 
+    void currentTabChanged();
+    void requestSaveAs();
+    void cursorPositionChanged(); // Новый сигнал
+
+private slots:
+    void onTabChanged(int index);
+    void onEditorTextChanged(CustomTextEdit *editor, const QString &originalContent);
 
 private:
     void setupTabWidget();
     void setupActions();
     
-    // Actions
     QAction *nextTabAction;
     QAction *prevTabAction;
     QAction *newTabAction;
