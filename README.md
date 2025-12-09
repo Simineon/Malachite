@@ -1,2 +1,3 @@
-# MalachiteIDE
-I trying to create my IDE, Malachite is beautiful stone.
+# Malachite
+
+I trying to create my code editor for python
