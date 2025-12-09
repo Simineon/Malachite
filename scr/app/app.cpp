@@ -36,7 +36,6 @@
 #include "../parser/parser.h"
 #include "execute/executer.h"
 #include "../text/CustomTextEdit.h"
-#include "engine_search/engine_window.h"
 
 App::App(QWidget *parent) 
     : QWidget(parent)
@@ -137,7 +136,7 @@ void App::setupContextMenu() {
         "}"
     );
     
-    // Добавляем стандартные действия редактирования
+    // simple actions
     QAction *undoAction = contextMenu->addAction("Undo");
     QAction *redoAction = contextMenu->addAction("Redo");
     contextMenu->addSeparator();
@@ -146,6 +145,7 @@ void App::setupContextMenu() {
     QAction *pasteAction = contextMenu->addAction("Paste");
     contextMenu->addSeparator();
     
+    // dont think about it!
     QAction *searchAction = contextMenu->addAction("Search in Engine");
     
     // connecting
@@ -155,7 +155,7 @@ void App::setupContextMenu() {
     connect(copyAction, &QAction::triggered, editor, &CustomTextEdit::copy);
     connect(pasteAction, &QAction::triggered, editor, &CustomTextEdit::paste);
     
-    // connect search action - ЗАХВАТЫВАЕМ this
+    // connect search action 
     connect(searchAction, &QAction::triggered, this, [this]() {
         if (!miniWindow) {
             miniWindow = new QDialog(this);
@@ -207,7 +207,7 @@ void App::setupStatusBar() {
     statusBar->addPermanentWidget(lineLabel);
     statusBar->addPermanentWidget(indentLabel);
     
-    // Отображаем начальное состояние
+    // Show cursor info
     updateCursorInfo();
 }
 
@@ -230,12 +230,11 @@ void App::updateCursorInfo() {
     QString lineText = block.text();
     int indentLevel = 0;
     
-    // Подсчитываем отступ в начале строки
     while (indentLevel < lineText.length() && lineText.at(indentLevel).isSpace()) {
         indentLevel++;
     }
     
-    // Определяем, используются ли табы или пробелы
+    // tabs or spaces
     QString indentType = "Spaces";
     if (indentLevel > 0 && lineText.at(0) == '\t') {
         indentType = "Tabs";
@@ -295,15 +294,15 @@ void App::setupMenuBar() {
     connect(exitRunAction, &QAction::triggered, this, &App::exitApp);
     connect(runCurrentFile, &QAction::triggered, this, &App::executePy);
     
-    // Connect для обновления заголовка окна
+    // Connect for update window title
     connect(tabWidget, &Tab::currentChanged, this, &App::updateWindowTitle);
     
-    // Connect для обновления информации о курсоре при смене вкладки
+    // Connect for update cursor info
     connect(tabWidget, &Tab::currentChanged, this, [this]() {
         updateCursorInfo();
     });
     
-    // Connect для изменения вида
+    // Connect for changing appearans 
     connect(toggleSplitViewAction, &QAction::triggered, this, &App::toggleSplitView);
     connect(editorOnlyViewAction, &QAction::triggered, this, &App::showEditorOnly);
     connect(panelOnlyViewAction, &QAction::triggered, this, &App::showPanelOnly);
@@ -448,14 +447,13 @@ void App::setupFileExplorer() {
 void App::setupConnections() {
     connect(fileTree, &QTreeView::doubleClicked, this, &App::onFileDoubleClicked);
     
-    // Connect для отслеживания движения курсора во всех редакторах
+    // Connect | here we following for cursor in all editors
     connect(tabWidget, &Tab::currentChanged, this, [this]() {
-        // Отключаем предыдущие соединения
         if (currentEditorCursorConnection) {
             disconnect(currentEditorCursorConnection);
         }
         
-        // Подключаемся к новому редактору
+        // connect with new editor
         CustomTextEdit *editor = tabWidget->getCurrentEditor();
         if (editor) {
             currentEditorCursorConnection = connect(editor, &CustomTextEdit::cursorPositionChanged,
@@ -542,7 +540,6 @@ void App::createNewFolderInExplorer() {
 
 void App::refreshFileExplorer() {
     QModelIndex currentRoot = fileTree->rootIndex();
-    // Для обновления модели в Qt используем setRootPath с текущим путем
     QString currentPath = fileModel->filePath(currentRoot);
     fileModel->setRootPath("");
     fileModel->setRootPath(currentPath);
@@ -595,9 +592,9 @@ void App::saveFile() {
     CustomTextEdit *editor = tabWidget->getCurrentEditor();
     if (!editor) return;
     
-    // Проверяем, есть ли несохраненные изменения
+    // checking 
     if (!editor->property("isModified").toBool()) {
-        return; // Файл не изменялся, не нужно сохранять
+        return; // File havent changes - we dont saving
     }
     
     QString filePath = editor->property("filePath").toString();
@@ -628,7 +625,7 @@ void App::saveAsFile() {
     if (!filePath.isEmpty()) {
         tabWidget->saveTabContent(editor, filePath);
         
-        // Обновляем свойства вкладки
+        // updating
         editor->setProperty("filePath", filePath);
         editor->setProperty("isModified", false);
         editor->setProperty("originalContent", editor->toPlainText());
@@ -652,7 +649,7 @@ void App::executePy() {
     CustomTextEdit *editor = tabWidget->getCurrentEditor();
     if (!editor) return;
     
-    // Сохраняем файл только если он был изменен
+    // save if file is changed
     if (editor->property("isModified").toBool()) {
         saveFile();
     }
@@ -688,14 +685,14 @@ void App::closeEvent(QCloseEvent *event) {
                                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         
         if (reply == QMessageBox::Save) {
-            // Сохраняем все измененные вкладки
+            // save all changed tabs
             for (int i = 0; i < tabWidget->count(); ++i) {
                 CustomTextEdit *editor = qobject_cast<CustomTextEdit*>(tabWidget->widget(i));
                 if (editor && editor->property("isModified").toBool()) {
                     tabWidget->setCurrentIndex(i);
                     QString filePath = editor->property("filePath").toString();
                     if (filePath.isEmpty()) {
-                        // Для файлов без пути предлагаем Save As
+                        // For files without path we give "Save as"
                         QString newFilePath = QFileDialog::getSaveFileName(
                             this,
                             "Save file",

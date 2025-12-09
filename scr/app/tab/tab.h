@@ -33,7 +33,7 @@ public slots:
 signals:
     void currentTabChanged();
     void requestSaveAs();
-    void cursorPositionChanged(); // Новый сигнал
+    void cursorPositionChanged(); 
 
 private slots:
     void onTabChanged(int index);

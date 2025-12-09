@@ -19,7 +19,7 @@ Parser::Parser(QTextDocument *parent) : QSyntaxHighlighter(parent) {
         << "\\bor\\b" << "\\bpass\\b" << "\\braise\\b" << "\\breturn\\b" 
         << "\\btry\\b" << "\\bwhile\\b" << "\\bwith\\b" << "\\byield\\b"
         
-        // Специальные идентификаторы
+        // special ids
         << "\\bself\\b" << "\\bcls\\b";
 
     keywordBuiltIn 
@@ -41,7 +41,7 @@ Parser::Parser(QTextDocument *parent) : QSyntaxHighlighter(parent) {
         << "\\bstaticmethod\\b" << "\\bstr\\b" << "\\bsum\\b" << "\\bsuper\\b" 
         << "\\btuple\\b" << "\\btype\\b" << "\\bvars\\b" << "\\bzip\\b" 
         
-        // Исключения
+        // Exceptions
         << "\\bBaseException\\b" << "\\bException\\b" << "\\bArithmeticError\\b" 
         << "\\bBufferError\\b" << "\\bLookupError\\b" << "\\bAssertionError\\b" 
         << "\\bAttributeError\\b" << "\\bEOFError\\b" << "\\bFloatingPointError\\b" 
@@ -62,7 +62,7 @@ Parser::Parser(QTextDocument *parent) : QSyntaxHighlighter(parent) {
         << "\\bIsADirectoryError\\b" << "\\bNotADirectoryError\\b" << "\\bPermissionError\\b" 
         << "\\bProcessLookupError\\b" << "\\bTimeoutError\\b"
         
-        // Константы
+        // constants
         << "\\b__name__\\b" << "\\b__main__\\b" << "\\b__file__\\b" << "\\b__doc__\\b"
         << "\\b__package__\\b" << "\\b__version__\\b";
 
@@ -72,7 +72,7 @@ Parser::Parser(QTextDocument *parent) : QSyntaxHighlighter(parent) {
         highlightingRules.append(rule);
     } 
     
-    // Встроенные функции (фиолетовый)
+    // build in funcs (purple)
     keywordFormat.setForeground(QColor(200, 1, 218));
     for (const QString &pattern : keywordBuiltIn) {
         rule.pattern = QRegularExpression(pattern);
@@ -80,20 +80,20 @@ Parser::Parser(QTextDocument *parent) : QSyntaxHighlighter(parent) {
         highlightingRules.append(rule);
     }
 
-    // Строки (зеленый) ""
+    // strings (green) ""
     doubleStringFormat.setForeground(QColor(0, 158, 0));
     rule.pattern = QRegularExpression("\".*?\"");
     rule.format = doubleStringFormat;
     highlightingRules.append(rule);
 
-    // Строки (зеленый) ''
+    // strings (green) ''
     singleStringFormat.setForeground(Qt::darkGreen);
     rule.pattern = QRegularExpression("\'.*?\'");
     rule.format = singleStringFormat;
     highlightingRules.append(rule);
 
-    // Многострочные строки (тройные кавычки)
-    multiLineStringFormat.setForeground(QColor(0, 128, 0));  // Теперь объявлено
+    // Many strings (triple quotes)
+    multiLineStringFormat.setForeground(QColor(0, 128, 0)); 
     rule.pattern = QRegularExpression("\"\"\".*?\"\"\"");
     rule.format = multiLineStringFormat;
     highlightingRules.append(rule);
@@ -102,34 +102,33 @@ Parser::Parser(QTextDocument *parent) : QSyntaxHighlighter(parent) {
     rule.format = multiLineStringFormat;
     highlightingRules.append(rule);
 
-    // Комментарии (серый)
+    // comments (gray)
     commentFormat.setForeground(Qt::gray);
     rule.pattern = QRegularExpression("#[^\n]*");
     rule.format = commentFormat;
     highlightingRules.append(rule);
 
-    // Числа (красный) - целые, вещественные, шестнадцатеричные
+    // numbers (red)
     numberFormat.setForeground(Qt::red);
     rule.pattern = QRegularExpression("\\b\\d+\\.?\\d*\\b");
     rule.format = numberFormat;
     highlightingRules.append(rule);
     
-    // Шестнадцатеричные числа
+    // hexademicimal numbers
     rule.pattern = QRegularExpression("\\b0[xX][0-9a-fA-F]+\\b");
     rule.format = numberFormat;
     highlightingRules.append(rule);
-    
-    // Восьмеричные числа
+    // something else
+    // 8
     rule.pattern = QRegularExpression("\\b0[oO][0-7]+\\b");
     rule.format = numberFormat;
     highlightingRules.append(rule);
     
-    // Двоичные числа
+    // 2
     rule.pattern = QRegularExpression("\\b0[bB][01]+\\b");
     rule.format = numberFormat;
     highlightingRules.append(rule);
 
-    // Декораторы (синий)
     decoratorFormat.setForeground(QColor(0, 100, 200));  
     decoratorFormat.setFontWeight(QFont::Bold);
     rule.pattern = QRegularExpression("@\\w+");
@@ -146,10 +145,8 @@ void Parser::highlightBlock(const QString &text) {
         }
     }
     
-    // Обработка многострочных комментариев и строк
     setCurrentBlockState(0);
     
-    // Многострочные строки с тройными кавычками
     highlightMultiLine(text, "\"\"\"", multiLineStringFormat);
     highlightMultiLine(text, "'''", multiLineStringFormat);
 }

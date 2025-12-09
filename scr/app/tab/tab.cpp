@@ -5,6 +5,8 @@
 #include <QTextStream>
 #include <QFileInfo>
 
+// yes i know what i stupid junior without comments
+
 Tab::Tab(QWidget *parent) 
     : QTabWidget(parent)
     , nextTabAction(nullptr)

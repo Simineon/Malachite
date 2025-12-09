@@ -2,26 +2,24 @@
 #define CUSTOMTEXTEDIT_H
 
 #include <QPlainTextEdit>
-#include <QKeyEvent>
-#include <QTextCursor>
 #include <QWidget>
-#include <QTextBlock>
 #include <QCompleter>
-#include <QStringList>
+#include <QPainter>
+#include <QTextBlock>
 #include <QScrollBar>
 #include <QAbstractItemView>
-#include <QPaintEvent>
-#include <QTextEdit>
-#include <QTextDocument>
-#include <QPainter>
-#include <QStack>
+#include <QKeyEvent>
+#include <QHash>
+
+//------------------>  maybe here bug!!!!!!!!!!!!!!!!!!!!! <--------------
 
 // Forward declaration
 class CustomTextEdit;
 
-class LineNumberArea : public QWidget {
+class LineNumberArea : public QWidget
+{
 public:
-    LineNumberArea(CustomTextEdit *editor);
+    explicit LineNumberArea(CustomTextEdit *editor);
     
     QSize sizeHint() const override;
 
@@ -32,18 +30,20 @@ private:
     CustomTextEdit *textEdit;
 };
 
-class CustomTextEdit : public QPlainTextEdit {
+class CustomTextEdit : public QPlainTextEdit
+{
     Q_OBJECT
 
 public:
     explicit CustomTextEdit(QWidget *parent = nullptr);
     ~CustomTextEdit();
     
+    // Completer methods
     void setCompleter(QCompleter *completer);
-    QCompleter *completer() const { return c; }
+    QCompleter *completer() const { return m_completer; }
     
-    // Methods for line numbering
-    int lineNumberAreaWidth();
+    // Line numbering methods
+    int lineNumberAreaWidth() const;
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     void updateLineNumberAreaWidth(int newBlockCount);
     void updateLineNumberArea(const QRect &rect, int dy);
@@ -57,54 +57,113 @@ public:
     void setLineNumberAlignment(Qt::Alignment alignment);
     void setLineNumberMargin(int margin);
     
-    QColor lineNumberAreaBackground() const { return lineNumberBgColor; }
-    QColor lineNumberColor() const { return lineNumberTextColor; }
-    QColor currentLineHighlight() const { return currentLineColor; }
-    QFont lineNumberFont() const { return lineNumberAreaFont; }
-    Qt::Alignment lineNumberAlignment() const { return lineNumberAlign; }
-    int lineNumberMargin() const { return lineNumberMarginPx; }
+    QColor lineNumberAreaBackground() const { return m_lineNumberBgColor; }
+    QColor lineNumberColor() const { return m_lineNumberTextColor; }
+    QColor currentLineHighlight() const { return m_currentLineColor; }
+    QFont lineNumberFont() const { return m_lineNumberAreaFont; }
+    Qt::Alignment lineNumberAlignment() const { return m_lineNumberAlign; }
+    int lineNumberMargin() const { return m_lineNumberMarginPx; }
+    
+    // File properties
+    void setFilePath(const QString &path) { m_filePath = path; }
+    QString filePath() const { return m_filePath; }
+    
+    // Modification tracking
+    bool isModified() const { return m_isModified; }
+    void setModified(bool modified) { m_isModified = modified; }
+
+signals:
+    void fileModified(bool modified);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void focusInEvent(QFocusEvent *event) override;
+    bool event(QEvent *event) override;
 
 private slots:
     void insertCompletion(const QString &completion);
+    void onTextChanged();
+    void highlightCurrentLine();
 
 private:
+    // Auto-completion helpers
     void handleAutoQuote(QChar quoteChar);
     void handleAutoBracket(QChar openingBracket);
     QString textUnderCursor() const;
     void handleBackspace();
     void handleEnter();
-    void createTips();
-    bool shouldInsertSingleQuote() const;
+    void handleTabKey(bool shiftModifier);
+    void handleAutoClose(QChar opening, QChar closing);
     
-private:
-    QCompleter *c = nullptr;
-    LineNumberArea *lineNumberArea;
+    // Completer management
+    void showCompleter();
+    void hideCompleter();
+    void updateCompleter();
+    
+    // Initialization
+    void createCompleter();
+    void setupLineNumberArea();
+    void setupConnections();
+    
+    // Configuration
+    static QStringList createPythonKeywords();
+    bool shouldSkipAutoComplete(QChar ch) const;
+    bool isInsideQuotesOrComment(const QTextCursor &cursor) const;
+    
+    // Static helper methods
+    static const QHash<QChar, QChar>& bracketPairs() {
+        static const QHash<QChar, QChar> pairs = {
+            {'(', ')'},
+            {'[', ']'},
+            {'{', '}'},
+            {'"', '"'},
+            {'\'', '\''}
+        };
+        return pairs;
+    }
+    
+    static const QString& wordBoundaryChars() {
+        static const QString chars = "~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-=\t\n\r ";
+        return chars;
+    }
+    
+    // Member variables
+    QCompleter *m_completer = nullptr;
+    LineNumberArea *m_lineNumberArea = nullptr;
     
     // Style properties for line numbers
-    QColor lineNumberBgColor = QColor(240, 240, 240);
-    QColor lineNumberTextColor = Qt::black;
-    QColor currentLineColor = QColor(200, 200, 255);
-    QFont lineNumberAreaFont;
-    Qt::Alignment lineNumberAlign = Qt::AlignRight;
-    int lineNumberMarginPx = 5;
+    QColor m_lineNumberBgColor = QColor(240, 240, 240);
+    QColor m_lineNumberTextColor = Qt::black;
+    QColor m_currentLineColor = QColor(200, 200, 255);
+    QFont m_lineNumberAreaFont;
+    Qt::Alignment m_lineNumberAlign = Qt::AlignRight;
+    int m_lineNumberMarginPx = 5;
+    
+    // File management
+    QString m_filePath;
+    QString m_originalContent;
+    bool m_isModified = false;
 };
 
-inline LineNumberArea::LineNumberArea(CustomTextEdit *editor) : QWidget(editor), textEdit(editor) {}
+// Inline implementations
+inline LineNumberArea::LineNumberArea(CustomTextEdit *editor) 
+    : QWidget(editor), textEdit(editor) 
+{
+    setAttribute(Qt::WA_NoSystemBackground);
+}
 
-inline QSize LineNumberArea::sizeHint() const {
+inline QSize LineNumberArea::sizeHint() const 
+{
     return QSize(textEdit->lineNumberAreaWidth(), 0);
 }
 
-inline void LineNumberArea::paintEvent(QPaintEvent *event) {
+inline void LineNumberArea::paintEvent(QPaintEvent *event) 
+{
     textEdit->lineNumberAreaPaintEvent(event);
 }
 
-inline CustomTextEdit::CustomTextEdit(QWidget *parent) : 
-    QPlainTextEdit(parent)
+inline CustomTextEdit::CustomTextEdit(QWidget *parent) 
+    : QPlainTextEdit(parent)
 {
     // Font setup
     QFont font("Consolas", 12);
@@ -112,81 +171,140 @@ inline CustomTextEdit::CustomTextEdit(QWidget *parent) :
     setFont(font);
     
     // Set line number font (can be different from main font)
-    lineNumberAreaFont = font;
-    lineNumberAreaFont.setPointSize(font.pointSize() - 1); // Slightly smaller
+    m_lineNumberAreaFont = font;
+    m_lineNumberAreaFont.setPointSize(font.pointSize() - 1);
     
     // Optimization
     setCenterOnScroll(false);
     setLineWrapMode(QPlainTextEdit::NoWrap);
     
     // Create completer
-    createTips();
+    createCompleter();
     
-    lineNumberArea = new LineNumberArea(this);
+    // Setup line number area
+    setupLineNumberArea();
     
-    connect(this, &QPlainTextEdit::blockCountChanged, this, &CustomTextEdit::updateLineNumberAreaWidth);
-    connect(this, &QPlainTextEdit::updateRequest, this, &CustomTextEdit::updateLineNumberArea);
-    connect(this, &QPlainTextEdit::cursorPositionChanged, this, [this]() {
-        viewport()->update();
-    });
-    
-    updateLineNumberAreaWidth(0);
+    // Setup connections
+    setupConnections();
 }
 
-inline CustomTextEdit::~CustomTextEdit() {
-    if (c) {
-        delete c;
-    }
-    if (lineNumberArea) {
-        delete lineNumberArea;
-    }
+inline CustomTextEdit::~CustomTextEdit() 
+{
+    delete m_completer;
+    delete m_lineNumberArea;
+}
+
+inline void CustomTextEdit::setupLineNumberArea()
+{
+    m_lineNumberArea = new LineNumberArea(this);
+    
+    connect(this, &QPlainTextEdit::blockCountChanged, 
+            this, &CustomTextEdit::updateLineNumberAreaWidth);
+    connect(this, &QPlainTextEdit::updateRequest, 
+            this, &CustomTextEdit::updateLineNumberArea);
+    connect(this, &QPlainTextEdit::cursorPositionChanged, 
+            this, &CustomTextEdit::highlightCurrentLine);
+    
+    updateLineNumberAreaWidth(0);
+    highlightCurrentLine();
+}
+
+inline void CustomTextEdit::setupConnections()
+{
+    connect(this->document(), &QTextDocument::contentsChanged,
+            this, &CustomTextEdit::onTextChanged);
+}
+
+inline void CustomTextEdit::createCompleter()
+{
+    QStringList keywords = createPythonKeywords();
+    QCompleter *completer = new QCompleter(keywords, this);
+    setCompleter(completer);
+}
+
+inline QStringList CustomTextEdit::createPythonKeywords()
+{
+    return {
+        // Keywords
+        "False", "None", "True", "and", "as", "assert", "async", 
+        "await", "break", "class", "continue", "def", "del", "elif", 
+        "else", "except", "finally", "for", "from", "global", "if", 
+        "import", "in", "is", "lambda", "nonlocal", "not", "or", 
+        "pass", "raise", "return", "try", "while", "with", "yield",
+        
+        // Special identifiers
+        "self", "cls", "__init__", "__name__", "__main__",
+        
+        // Built-in functions
+        "abs", "all", "any", "ascii", "bin", "bool", "breakpoint",
+        "bytearray", "bytes", "callable", "chr", "classmethod",
+        "compile", "complex", "delattr", "dict", "dir", "divmod",
+        "enumerate", "eval", "exec", "filter", "float", "format",
+        "frozenset", "getattr", "globals", "hasattr", "hash",
+        "help", "hex", "id", "input", "int", "isinstance",
+        "issubclass", "iter", "len", "list", "locals", "map",
+        "max", "memoryview", "min", "next", "object", "oct",
+        "open", "ord", "pow", "print", "property", "range",
+        "repr", "reversed", "round", "set", "setattr", "slice",
+        "sorted", "staticmethod", "str", "sum", "super", "tuple",
+        "type", "vars", "zip",
+        
+        // Common modules
+        "os", "sys", "json", "re", "datetime", "math", "random",
+        "collections", "itertools", "functools", "typing"
+    };
 }
 
 // Style methods implementation
-inline void CustomTextEdit::setLineNumberAreaBackground(const QColor &color) {
-    lineNumberBgColor = color;
-    if (lineNumberArea) {
-        lineNumberArea->update();
+inline void CustomTextEdit::setLineNumberAreaBackground(const QColor &color) 
+{
+    m_lineNumberBgColor = color;
+    if (m_lineNumberArea) {
+        m_lineNumberArea->update();
     }
 }
 
-inline void CustomTextEdit::setLineNumberColor(const QColor &color) {
-    lineNumberTextColor = color;
-    if (lineNumberArea) {
-        lineNumberArea->update();
+inline void CustomTextEdit::setLineNumberColor(const QColor &color) 
+{
+    m_lineNumberTextColor = color;
+    if (m_lineNumberArea) {
+        m_lineNumberArea->update();
     }
 }
 
-inline void CustomTextEdit::setCurrentLineHighlight(const QColor &color) {
-    currentLineColor = color;
-    if (lineNumberArea) {
-        lineNumberArea->update();
-    }
+inline void CustomTextEdit::setCurrentLineHighlight(const QColor &color) 
+{
+    m_currentLineColor = color;
+    highlightCurrentLine();
 }
 
-inline void CustomTextEdit::setLineNumberFont(const QFont &font) {
-    lineNumberAreaFont = font;
-    if (lineNumberArea) {
-        lineNumberArea->update();
+inline void CustomTextEdit::setLineNumberFont(const QFont &font) 
+{
+    m_lineNumberAreaFont = font;
+    if (m_lineNumberArea) {
+        m_lineNumberArea->update();
         updateLineNumberAreaWidth(0);
     }
 }
 
-inline void CustomTextEdit::setLineNumberAlignment(Qt::Alignment alignment) {
-    lineNumberAlign = alignment;
-    if (lineNumberArea) {
-        lineNumberArea->update();
+inline void CustomTextEdit::setLineNumberAlignment(Qt::Alignment alignment) 
+{
+    m_lineNumberAlign = alignment;
+    if (m_lineNumberArea) {
+        m_lineNumberArea->update();
     }
 }
 
-inline void CustomTextEdit::setLineNumberMargin(int margin) {
-    lineNumberMarginPx = margin;
-    if (lineNumberArea) {
-        lineNumberArea->update();
+inline void CustomTextEdit::setLineNumberMargin(int margin) 
+{
+    m_lineNumberMarginPx = margin;
+    if (m_lineNumberArea) {
+        m_lineNumberArea->update();
     }
 }
 
-inline int CustomTextEdit::lineNumberAreaWidth() {
+inline int CustomTextEdit::lineNumberAreaWidth() const
+{
     int digits = 1;
     int max = qMax(1, blockCount());
     while (max >= 10) {
@@ -194,41 +312,38 @@ inline int CustomTextEdit::lineNumberAreaWidth() {
         ++digits;
     }
     
-    QFontMetrics fm(lineNumberAreaFont);
-    int space = lineNumberMarginPx * 2 + fm.horizontalAdvance(QLatin1Char('9')) * digits;
+    QFontMetrics fm(m_lineNumberAreaFont);
+    int space = m_lineNumberMarginPx * 2 + fm.horizontalAdvance(QLatin1Char('9')) * digits;
     return space;
 }
 
-inline void CustomTextEdit::lineNumberAreaPaintEvent(QPaintEvent *event) {
-    QPainter painter(lineNumberArea);
-    
-    // Fill background
-    painter.fillRect(event->rect(), lineNumberBgColor);
-    
-    // Set font for line numbers
-    painter.setFont(lineNumberAreaFont);
-    QFontMetrics fm(lineNumberAreaFont);
-    int lineHeight = fm.height();
+inline void CustomTextEdit::lineNumberAreaPaintEvent(QPaintEvent *event) 
+{
+    QPainter painter(m_lineNumberArea);
+    painter.fillRect(event->rect(), m_lineNumberBgColor);
     
     QTextBlock block = firstVisibleBlock();
     int blockNumber = block.blockNumber();
     int top = qRound(blockBoundingGeometry(block).translated(contentOffset()).top());
     int bottom = top + qRound(blockBoundingRect(block).height());
     
+    painter.setFont(m_lineNumberAreaFont);
+    QFontMetrics fm(m_lineNumberAreaFont);
+    int lineHeight = fm.height();
+    
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
             
             // Highlight current line
-            QTextCursor cursor = textCursor();
-            if (cursor.blockNumber() == blockNumber) {
-                painter.fillRect(0, top, lineNumberArea->width(), lineHeight, currentLineColor);
+            if (textCursor().blockNumber() == blockNumber) {
+                painter.fillRect(0, top, m_lineNumberArea->width(), lineHeight, m_currentLineColor);
             }
             
             // Draw line number
-            painter.setPen(lineNumberTextColor);
-            QRect numberRect(0, top, lineNumberArea->width() - lineNumberMarginPx, lineHeight);
-            painter.drawText(numberRect, lineNumberAlign | Qt::AlignVCenter, number);
+            painter.setPen(m_lineNumberTextColor);
+            QRect numberRect(0, top, m_lineNumberArea->width() - m_lineNumberMarginPx, lineHeight);
+            painter.drawText(numberRect, m_lineNumberAlign | Qt::AlignVCenter, number);
         }
         
         block = block.next();
@@ -238,16 +353,18 @@ inline void CustomTextEdit::lineNumberAreaPaintEvent(QPaintEvent *event) {
     }
 }
 
-inline void CustomTextEdit::updateLineNumberAreaWidth(int newBlockCount) {
-    Q_UNUSED(newBlockCount)
+inline void CustomTextEdit::updateLineNumberAreaWidth(int newBlockCount) 
+{
+    Q_UNUSED(newBlockCount);
     setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
 }
 
-inline void CustomTextEdit::updateLineNumberArea(const QRect &rect, int dy) {
+inline void CustomTextEdit::updateLineNumberArea(const QRect &rect, int dy) 
+{
     if (dy) {
-        lineNumberArea->scroll(0, dy);
+        m_lineNumberArea->scroll(0, dy);
     } else {
-        lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
+        m_lineNumberArea->update(0, rect.y(), m_lineNumberArea->width(), rect.height());
     }
     
     if (rect.contains(viewport()->rect())) {
@@ -255,292 +372,307 @@ inline void CustomTextEdit::updateLineNumberArea(const QRect &rect, int dy) {
     }
 }
 
-inline void CustomTextEdit::resizeEvent(QResizeEvent *event) {
+inline void CustomTextEdit::resizeEvent(QResizeEvent *event) 
+{
     QPlainTextEdit::resizeEvent(event);
     
     QRect cr = contentsRect();
-    lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+    m_lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), 
+                                        lineNumberAreaWidth(), cr.height()));
 }
 
-inline void CustomTextEdit::setCompleter(QCompleter *completer) {
-    if (c) {
-        disconnect(c, nullptr, this, nullptr);
-        delete c;
+inline void CustomTextEdit::highlightCurrentLine() 
+{
+    QList<QTextEdit::ExtraSelection> extraSelections;
+    
+    if (!isReadOnly()) {
+        QTextEdit::ExtraSelection selection;
+        selection.format.setBackground(m_currentLineColor);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.cursor = textCursor();
+        selection.cursor.clearSelection();
+        extraSelections.append(selection);
     }
     
-    c = completer;
-    if (!c) {
+    setExtraSelections(extraSelections);
+}
+
+inline void CustomTextEdit::setCompleter(QCompleter *completer) 
+{
+    if (m_completer) {
+        disconnect(m_completer, nullptr, this, nullptr);
+        delete m_completer;
+    }
+    
+    m_completer = completer;
+    if (!m_completer) {
         return;
     }
     
-    c->setWidget(this);
-    c->setCompletionMode(QCompleter::PopupCompletion);
-    c->setCaseSensitivity(Qt::CaseInsensitive);
+    m_completer->setWidget(this);
+    m_completer->setCompletionMode(QCompleter::PopupCompletion);
+    m_completer->setCaseSensitivity(Qt::CaseInsensitive);
     
-    connect(c, QOverload<const QString &>::of(&QCompleter::activated),
+    connect(m_completer, QOverload<const QString &>::of(&QCompleter::activated),
             this, &CustomTextEdit::insertCompletion);
 }
 
-inline void CustomTextEdit::focusInEvent(QFocusEvent *event) {
-    if (c) {
-        c->setWidget(this);
+inline void CustomTextEdit::focusInEvent(QFocusEvent *event) 
+{
+    if (m_completer) {
+        m_completer->setWidget(this);
     }
     QPlainTextEdit::focusInEvent(event);
 }
 
-inline void CustomTextEdit::insertCompletion(const QString &completion) {
-    if (!c || c->widget() != this) {
+inline bool CustomTextEdit::event(QEvent *event)
+{
+    if (event->type() == QEvent::ToolTip) {
+        // Можно добавить всплывающие подсказки здесь
+        return QPlainTextEdit::event(event);
+    }
+    return QPlainTextEdit::event(event);
+}
+
+inline void CustomTextEdit::insertCompletion(const QString &completion) 
+{
+    if (!m_completer || m_completer->widget() != this) {
         return;
     }
     
     QTextCursor tc = textCursor();
-    int extra = completion.length() - c->completionPrefix().length();
-    tc.movePosition(QTextCursor::Left);
-    tc.movePosition(QTextCursor::EndOfWord);
-    tc.insertText(completion.right(extra));
+    int prefixLength = m_completer->completionPrefix().length();
+    
+    tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, prefixLength);
+    tc.insertText(completion);
     setTextCursor(tc);
 }
 
-inline QString CustomTextEdit::textUnderCursor() const {
+inline QString CustomTextEdit::textUnderCursor() const 
+{
     QTextCursor tc = textCursor();
     tc.select(QTextCursor::WordUnderCursor);
     return tc.selectedText();
 }
 
-inline bool CustomTextEdit::shouldInsertSingleQuote() const {
-    QTextCursor cursor = textCursor();
-    int pos = cursor.position();
-    QTextDocument *doc = document();
-    
-
-    return false;
+inline void CustomTextEdit::hideCompleter() 
+{
+    if (m_completer && m_completer->popup()) {
+        m_completer->popup()->hide();
+    }
 }
 
-inline void CustomTextEdit::keyPressEvent(QKeyEvent *event) {
-    // Handle completer
-    if (c && c->popup() && c->popup()->isVisible()) {
+inline void CustomTextEdit::showCompleter()
+{
+    if (!m_completer || !m_completer->completionCount()) {
+        return;
+    }
+    
+    QRect cr = cursorRect();
+    cr.setWidth(m_completer->popup()->sizeHintForColumn(0) +
+                m_completer->popup()->verticalScrollBar()->sizeHint().width());
+    m_completer->complete(cr);
+}
+
+inline void CustomTextEdit::updateCompleter()
+{
+    if (!m_completer) {
+        return;
+    }
+    
+    QString completionPrefix = textUnderCursor();
+    if (completionPrefix != m_completer->completionPrefix()) {
+        m_completer->setCompletionPrefix(completionPrefix);
+        if (m_completer->popup()) {
+            m_completer->popup()->setCurrentIndex(
+                m_completer->completionModel()->index(0, 0));
+        }
+    }
+    
+    if (completionPrefix.length() >= 1 && m_completer->completionCount() > 0) {
+        showCompleter();
+    } else {
+        hideCompleter();
+    }
+}
+
+inline void CustomTextEdit::keyPressEvent(QKeyEvent *event) 
+{
+    // Handle completer popup
+    if (m_completer && m_completer->popup() && m_completer->popup()->isVisible()) {
         switch (event->key()) {
-            case Qt::Key_Enter:
-            case Qt::Key_Return:
-            case Qt::Key_Escape:
-            case Qt::Key_Tab:
-            case Qt::Key_Backtab:
-                event->ignore();
-                return;
-            default:
-                break;
-        }
-    }
-    
-    // Check for auto-completion of quotes and brackets
-    if (!event->text().isEmpty() && !event->text().isNull()) {
-        QChar pressedChar = event->text().at(0);
-        
-        if (pressedChar == '"' || pressedChar == '\'') {
-            // Всегда используем автозавершение кавычек
-            handleAutoQuote(pressedChar);
-            event->accept();
-            return;
-        }
-        
-        // Handle auto-brackets
-        if (pressedChar == '(' || pressedChar == '[' || pressedChar == '{') {
-            handleAutoBracket(pressedChar);
-            event->accept();
-            return;
-        }
-        
-        // Handle auto-closing for brackets when typing the closing bracket
-        if (pressedChar == ')' || pressedChar == ']' || pressedChar == '}') {
-            QTextCursor cursor = textCursor();
-            if (cursor.position() < document()->characterCount()) {
-                cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1);
-                QString nextChar = cursor.selectedText();
-                if ((pressedChar == ')' && nextChar == ")") ||
-                    (pressedChar == ']' && nextChar == "]") ||
-                    (pressedChar == '}' && nextChar == "}")) {
-                    // Move cursor over the existing closing bracket
-                    cursor.clearSelection();
-                    cursor.movePosition(QTextCursor::Right);
-                    setTextCursor(cursor);
-                    event->accept();
-                    return;
-                }
-            }
-        }
-    }
-    
-    // Special keys
-    bool keyHandled = false;
-    
-    switch (event->key()) {
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+        case Qt::Key_Escape:
         case Qt::Key_Tab:
-            if (c && c->popup() && c->popup()->isVisible()) {
-                if (c->popup()) {
-                    c->popup()->hide();
-                }
+        case Qt::Key_Backtab:
+            event->ignore();
+            return;
+        default:
+            break;
+        }
+    }
+    
+    // Handle special keys
+    switch (event->key()) {
+    case Qt::Key_Backspace:
+        hideCompleter();
+        handleBackspace();
+        event->accept();
+        return;
+        
+    case Qt::Key_Tab:
+        handleTabKey(event->modifiers() & Qt::ShiftModifier);
+        event->accept();
+        return;
+        
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
+        handleEnter();
+        event->accept();
+        return;
+        
+    case Qt::Key_ParenLeft:
+        handleAutoClose('(', ')');
+        event->accept();
+        return;
+        
+    case Qt::Key_BracketLeft:
+        handleAutoClose('[', ']');
+        event->accept();
+        return;
+        
+    case Qt::Key_BraceLeft:
+        handleAutoClose('{', '}');
+        event->accept();
+        return;
+        
+    case Qt::Key_QuoteDbl:
+        handleAutoQuote('"');
+        event->accept();
+        return;
+        
+    case Qt::Key_Apostrophe:
+        handleAutoQuote('\'');
+        event->accept();
+        return;
+        
+    case Qt::Key_ParenRight:
+    case Qt::Key_BracketRight:
+    case Qt::Key_BraceRight:
+        // Skip over existing closing brackets
+        QTextCursor cursor = textCursor();
+        if (cursor.position() < document()->characterCount()) {
+            cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1);
+            QString nextChar = cursor.selectedText();
+            if ((event->key() == Qt::Key_ParenRight && nextChar == ")") ||
+                (event->key() == Qt::Key_BracketRight && nextChar == "]") ||
+                (event->key() == Qt::Key_BraceRight && nextChar == "}")) {
+                cursor.clearSelection();
+                cursor.movePosition(QTextCursor::Right);
+                setTextCursor(cursor);
                 event->accept();
                 return;
             }
-            insertPlainText("    ");
-            keyHandled = true;
-            break;
-        case Qt::Key_Backspace:
-            handleBackspace();
-            keyHandled = true;
-            break;
-        case Qt::Key_Return:
-        case Qt::Key_Enter:
-            handleEnter();
-            keyHandled = true;
-            break;
-        default:
-            break;
+        }
+        break;
     }
     
-    if (keyHandled) {
-        event->accept();
-        return;
+    // Handle regular text input for auto-completion
+    if (!event->text().isEmpty()) {
+        QChar pressedChar = event->text().at(0);
+        
+        // Check if we should trigger auto-completion
+        if (!shouldSkipAutoComplete(pressedChar)) {
+            // Let parent class handle the key first
+            QPlainTextEdit::keyPressEvent(event);
+            
+            // Then update completer
+            if (m_completer && !isInsideQuotesOrComment(textCursor())) {
+                updateCompleter();
+            }
+            return;
+        }
     }
     
-    // Process the key normally first
+    // Default handling
     QPlainTextEdit::keyPressEvent(event);
-    
-    // Handle completer after normal processing
-    if (!c) {
-        return;
-    }
-    
-    const bool ctrlOrShift = event->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier);
-    if (ctrlOrShift && event->text().isEmpty()) {
-        return;
-    }
-    
-    // Check for Ctrl+Space shortcut
-    bool isShortcut = ((event->modifiers() & Qt::ControlModifier) && event->key() == Qt::Key_Space);
-    
-    static QString eow("~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-="); // end of word
-    bool hasModifier = (event->modifiers() != Qt::NoModifier) && !ctrlOrShift;
-    QString completionPrefix = textUnderCursor();
-    
-    // Don't show completer in these cases
-    if (!isShortcut && (hasModifier || event->text().isEmpty() || 
-                       completionPrefix.length() < 1 ||  
-                       eow.contains(event->text().right(1)))) {
-        if (c->popup()) {
-            c->popup()->hide();
-        }
-        return;
-    }
-    
-    // Update completer
-    if (completionPrefix != c->completionPrefix()) {
-        c->setCompletionPrefix(completionPrefix);
-        if (c->popup()) {
-            c->popup()->setCurrentIndex(c->completionModel()->index(0, 0));
-        }
-    }
-    
-    // Only show popup if there are completions and we have enough characters
-    if (completionPrefix.length() >= 1 && c->completionCount() > 0) { 
-        QRect cr = cursorRect();
-        cr.setWidth(c->popup()->sizeHintForColumn(0) 
-                    + c->popup()->verticalScrollBar()->sizeHint().width());
-        c->complete(cr);
-    } else {
-        if (c->popup()) {
-            c->popup()->hide();
-        }
-    }
 }
 
-inline void CustomTextEdit::handleAutoQuote(QChar quoteChar) {
+inline bool CustomTextEdit::shouldSkipAutoComplete(QChar ch) const
+{
+    return wordBoundaryChars().contains(ch);
+}
+
+inline bool CustomTextEdit::isInsideQuotesOrComment(const QTextCursor &cursor) const
+{
+    Q_UNUSED(cursor);
+    return false;
+}
+
+inline void CustomTextEdit::handleAutoQuote(QChar quoteChar) 
+{
     QTextCursor cursor = textCursor();
-    int originalPosition = cursor.position();
     
-    // Check if there's a selection
+    // Check for selection
     if (cursor.hasSelection()) {
-        // Wrap selection with quotes
         QString selectedText = cursor.selectedText();
         cursor.insertText(QString(quoteChar) + selectedText + quoteChar);
-        
-        // Place cursor after the closing quote
         cursor.movePosition(QTextCursor::Left);
         setTextCursor(cursor);
         return;
     }
     
-    // Check if we're inside an empty quote pair
-    if (originalPosition < document()->characterCount()) {
-        cursor.setPosition(originalPosition);
+    // Check if next character is the same quote
+    int pos = cursor.position();
+    if (pos < document()->characterCount()) {
         cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1);
         QString nextChar = cursor.selectedText();
-        cursor.clearSelection();
-        
         if (nextChar == quoteChar) {
-            // Move cursor over the existing quote
-            cursor.setPosition(originalPosition);
+            cursor.clearSelection();
             cursor.movePosition(QTextCursor::Right);
             setTextCursor(cursor);
             return;
         }
     }
     
-    // Check if we should insert single quote
-    if (shouldInsertSingleQuote()) {
-        // Insert single quote
-        cursor.setPosition(originalPosition);
-        cursor.insertText(quoteChar);
-        cursor.setPosition(originalPosition + 1);
-        setTextCursor(cursor);
-        return;
-    }
-    
     // Insert quote pair
-    QString quotePair = QString(quoteChar) + quoteChar;
-    cursor.setPosition(originalPosition);
-    cursor.insertText(quotePair);
-    
-    // Move cursor between the quotes
-    cursor.setPosition(originalPosition + 1);
+    cursor.insertText(QString(quoteChar) + quoteChar);
+    cursor.movePosition(QTextCursor::Left);
     setTextCursor(cursor);
 }
 
-
-inline void CustomTextEdit::handleAutoBracket(QChar openingBracket) {
+inline void CustomTextEdit::handleAutoClose(QChar opening, QChar closing)
+{
     QTextCursor cursor = textCursor();
-    QChar closingBracket;
     
-    // Determine the matching closing bracket
-    switch (openingBracket.unicode()) {
-        case '(': closingBracket = ')'; break;
-        case '[': closingBracket = ']'; break;
-        case '{': closingBracket = '}'; break;
-        default: return;
-    }
-    
-    // Check if there's a selection
+    // Check for selection
     if (cursor.hasSelection()) {
-        // Wrap selection with brackets
         QString selectedText = cursor.selectedText();
-        cursor.insertText(QString(openingBracket) + selectedText + closingBracket);
-        
-        // Place cursor after the closing bracket
+        cursor.insertText(QString(opening) + selectedText + closing);
         cursor.movePosition(QTextCursor::Left);
         setTextCursor(cursor);
         return;
     }
     
-    // Insert bracket quote
-    QString bracketPair = QString(openingBracket) + closingBracket;
-    cursor.insertText(bracketPair);
-    
-    // Move cursor between the brackets
+    // Insert bracket pair
+    cursor.insertText(QString(opening) + closing);
     cursor.movePosition(QTextCursor::Left);
     setTextCursor(cursor);
 }
 
-inline void CustomTextEdit::handleBackspace() {
+inline void CustomTextEdit::handleAutoBracket(QChar openingBracket) 
+{
+    QChar closingBracket = bracketPairs().value(openingBracket);
+    if (closingBracket.isNull()) {
+        return;
+    }
+    
+    handleAutoClose(openingBracket, closingBracket);
+}
+
+inline void CustomTextEdit::handleBackspace() 
+{
     QTextCursor cursor = textCursor();
     
     if (cursor.hasSelection()) {
@@ -550,7 +682,7 @@ inline void CustomTextEdit::handleBackspace() {
     
     int position = cursor.position();
     
-    // Checking for auto-inserted quotes
+    // Check for auto-inserted pairs
     if (position > 0) {
         cursor.movePosition(QTextCursor::Left);
         cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 2);
@@ -563,11 +695,14 @@ inline void CustomTextEdit::handleBackspace() {
         }
     }
     
+    // Handle smart backspace for indentation
     cursor = textCursor();
     cursor.movePosition(QTextCursor::StartOfLine);
-    cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, position - cursor.position());
+    cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 
+                       position - cursor.position());
     QString textBeforeCursor = cursor.selectedText();
     
+    // Count trailing spaces
     int spacesCount = 0;
     for (int i = textBeforeCursor.length() - 1; i >= 0; --i) {
         if (textBeforeCursor.at(i) == ' ') {
@@ -577,6 +712,7 @@ inline void CustomTextEdit::handleBackspace() {
         }
     }
     
+    // Delete 4 spaces if we have multiples of 4
     if (spacesCount >= 4 && spacesCount % 4 == 0) {
         cursor = textCursor();
         cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 4);
@@ -586,115 +722,128 @@ inline void CustomTextEdit::handleBackspace() {
         }
     }
     
+    // Default backspace
     cursor = textCursor();
     cursor.deletePreviousChar();
 }
 
-inline void CustomTextEdit::handleEnter() {
-    QTextCursor cursor = textCursor();
-    
-    // Getting current block (line)
-    QTextBlock currentBlock = cursor.block();
-    QString currentLineText = currentBlock.text();
-    
-    int indentCount = 0;
-    while (indentCount < currentLineText.length() && currentLineText.at(indentCount) == ' ') {
-        indentCount++;
-    }
-    
-    // Check on def or class
-    bool shouldAddExtraIndent = false;
-    QString trimmedLine = currentLineText.trimmed();
-    if (trimmedLine.startsWith("class ") || trimmedLine.startsWith("def ")) {
-        shouldAddExtraIndent = true;
-    }
-    
-    // Check for colon at end of line
-    if (!currentLineText.trimmed().isEmpty()) {
-        QChar lastChar = currentLineText.trimmed().at(currentLineText.trimmed().length() - 1);
-        if (lastChar == ':' || currentLineText.contains("{")) {
-            shouldAddExtraIndent = true;
+inline void CustomTextEdit::handleTabKey(bool shiftModifier)
+{
+    if (shiftModifier) {
+        // Unindent
+        QTextCursor cursor = textCursor();
+        
+        if (cursor.hasSelection()) {
+            // Unindent all selected lines
+            int start = cursor.selectionStart();
+            int end = cursor.selectionEnd();
+            
+            cursor.setPosition(start);
+            int startBlock = cursor.blockNumber();
+            
+            cursor.setPosition(end);
+            int endBlock = cursor.blockNumber();
+            
+            cursor.beginEditBlock();
+            
+            for (int i = startBlock; i <= endBlock; ++i) {
+                cursor.movePosition(QTextCursor::StartOfBlock);
+                cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 4);
+                
+                if (cursor.selectedText() == "    ") {
+                    cursor.removeSelectedText();
+                }
+                
+                cursor.movePosition(QTextCursor::NextBlock);
+            }
+            
+            cursor.endEditBlock();
+        } else {
+            // Unindent current line
+            cursor.movePosition(QTextCursor::StartOfBlock);
+            cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 4);
+            
+            if (cursor.selectedText() == "    ") {
+                cursor.removeSelectedText();
+            }
         }
-    }
-    
-    // Insert new line
-    QPlainTextEdit::keyPressEvent(new QKeyEvent(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier));
-    
-    int newIndentCount = indentCount;
-    if (shouldAddExtraIndent) {
-        newIndentCount += 4;
-    }
-    
-    if (newIndentCount > 0) {
-        cursor = textCursor();
-        QString indent(newIndentCount, ' ');
-        cursor.insertText(indent);
+    } else {
+        // Indent or insert tab
+        if (textCursor().hasSelection()) {
+            // Indent all selected lines
+            QTextCursor cursor = textCursor();
+            int start = cursor.selectionStart();
+            int end = cursor.selectionEnd();
+            
+            cursor.setPosition(start);
+            int startBlock = cursor.blockNumber();
+            
+            cursor.setPosition(end);
+            int endBlock = cursor.blockNumber();
+            
+            cursor.beginEditBlock();
+            
+            for (int i = startBlock; i <= endBlock; ++i) {
+                cursor.movePosition(QTextCursor::StartOfBlock);
+                cursor.insertText("    ");
+                cursor.movePosition(QTextCursor::NextBlock);
+            }
+            
+            cursor.endEditBlock();
+        } else {
+            insertPlainText("    ");
+        }
     }
 }
 
-inline void CustomTextEdit::createTips() {
-    QStringList pythonKeyWord;
+inline void CustomTextEdit::handleEnter() 
+{
+    QTextCursor cursor = textCursor();
+    QTextBlock currentBlock = cursor.block();
+    QString currentLineText = currentBlock.text();
     
-    pythonKeyWord 
-        << "False" << "None" << "True" 
-        << "and" << "as" << "assert" << "async" 
-        << "await" << "break" << "class" << "continue" 
-        << "def" << "del" << "elif" << "else" 
-        << "except" << "finally" << "for" << "from" 
-        << "global" << "if" << "import" << "in" 
-        << "is" << "lambda" << "nonlocal" << "not" 
-        << "or" << "pass" << "raise" << "return" 
-        << "try" << "while" << "with" << "yield"
-        
-        // Специальные идентификаторы
-        << "self" << "cls"
-        
-        // Встроенные функции и типы
-        << "abs" << "all" << "any" << "ascii" 
-        << "bin" << "bool" << "breakpoint" << "bytearray" 
-        << "bytes" << "callable" << "chr" << "classmethod" 
-        << "compile" << "complex" << "delattr" << "dict" 
-        << "dir" << "divmod" << "enumerate" << "eval" 
-        << "exec" << "filter" << "float" << "format" 
-        << "frozenset" << "getattr" << "globals" << "hasattr" 
-        << "hash" << "help" << "hex" << "id" 
-        << "input" << "int" << "isinstance" << "issubclass" 
-        << "iter" << "len" << "list" << "locals" 
-        << "map" << "max" << "memoryview" << "min" 
-        << "next" << "object" << "oct" << "open" 
-        << "ord" << "pow" << "print" << "property" 
-        << "range" << "repr" << "reversed" << "round" 
-        << "set" << "setattr" << "slice" << "sorted" 
-        << "staticmethod" << "str" << "sum" << "super" 
-        << "tuple" << "type" << "vars" << "zip" 
-        
-        // Исключения
-        << "BaseException" << "Exception" << "ArithmeticError" 
-        << "BufferError" << "LookupError" << "AssertionError" 
-        << "AttributeError" << "EOFError" << "FloatingPointError" 
-        << "GeneratorExit" << "ImportError" << "ModuleNotFoundError" 
-        << "IndexError" << "KeyError" << "KeyboardInterrupt" 
-        << "MemoryError" << "NameError" << "NotImplementedError" 
-        << "OSError" << "OverflowError" << "RecursionError" 
-        << "ReferenceError" << "RuntimeError" << "StopIteration" 
-        << "StopAsyncIteration" << "SyntaxError" << "IndentationError" 
-        << "TabError" << "SystemError" << "SystemExit" 
-        << "TypeError" << "UnboundLocalError" << "UnicodeError" 
-        << "UnicodeDecodeError" << "UnicodeEncodeError" << "UnicodeTranslateError" 
-        << "ValueError" << "ZeroDivisionError" << "EnvironmentError" 
-        << "IOError" << "WindowsError" << "BlockingIOError" 
-        << "ChildProcessError" << "ConnectionError" << "BrokenPipeError" 
-        << "ConnectionAbortedError" << "ConnectionRefusedError" << "ConnectionResetError" 
-        << "FileExistsError" << "FileNotFoundError" << "InterruptedError" 
-        << "IsADirectoryError" << "NotADirectoryError" << "PermissionError" 
-        << "ProcessLookupError" << "TimeoutError"
-        
-        // Константы
-        << "__name__" << "__main__" << "__file__" << "__doc__"
-        << "__package__" << "__version__";
+    // Count leading spaces
+    int indentCount = 0;
+    while (indentCount < currentLineText.length() && 
+           currentLineText.at(indentCount).isSpace()) {
+        indentCount++;
+    }
+    
+    // Check if we need extra indentation
+    bool extraIndent = false;
+    QString trimmedLine = currentLineText.trimmed();
+    
+    if (trimmedLine.endsWith(':')) {
+        extraIndent = true;
+    } else if (trimmedLine.startsWith("class ") || trimmedLine.startsWith("def ")) {
+        extraIndent = true;
+    } else if (trimmedLine.contains("{")) {
+        extraIndent = true;
+    }
+    
+    // Insert new line
+    QPlainTextEdit::keyPressEvent(new QKeyEvent(QEvent::KeyPress, 
+                                                Qt::Key_Return, 
+                                                Qt::NoModifier));
+    
+    // Apply indentation
+    int newIndent = indentCount + (extraIndent ? 4 : 0);
+    if (newIndent > 0) {
+        cursor = textCursor();
+        cursor.insertText(QString(newIndent, ' '));
+    }
+}
 
-    QCompleter *completer = new QCompleter(pythonKeyWord, this);
-    setCompleter(completer);
+inline void CustomTextEdit::onTextChanged()
+{
+    QString currentContent = toPlainText();
+    if (!m_originalContent.isEmpty() && currentContent != m_originalContent) {
+        m_isModified = true;
+        emit fileModified(true);
+    } else if (m_originalContent.isEmpty() && !currentContent.isEmpty()) {
+        m_isModified = true;
+        emit fileModified(true);
+    }
 }
 
 #endif // CUSTOMTEXTEDIT_H
